@@ -8,9 +8,7 @@ export interface TrackData {
   SYNTHETIC_COM: { path: string };
 }
 
-export interface TrackDatas {
-  [key: string]: TrackData;
-}
+export type TrackDatas = TrackData[];
 
 export interface Howls {
   ACOUSTIC: Howl;
@@ -19,10 +17,4 @@ export interface Howls {
   SYNTHETIC_COM: Howl;
 }
 
-export interface TrackHowls {
-  [key: string]: Howls;
-}
-
-export enum TRACKS {
-  TRACK1 = 'TRACK1',
-}
+export type TrackHowls = Howls[];

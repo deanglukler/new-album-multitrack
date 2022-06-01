@@ -1,46 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { TrackData } from './types';
-import { Transport } from './Transport';
+import { LinearIndeterminate } from './components/LinearIndeterminate';
 import { Player } from './Player';
-
-const player = new Player();
+import PlayerView from './PlayerView';
 
 function App() {
-  const [currentTrack] = useState<TrackData>(player.firstTrack);
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  const handleOnPlay = () => {
-    setIsPlaying(true);
-  };
-
-  const handleSkipForward = () => {};
-
-  const handleSkipBack = () => {};
-
-  const handlePause = () => {
-    setIsPlaying(false);
-  };
+  const [player, setPlayer] = useState<Player | null>(null);
 
   useEffect(() => {
-    if (isPlaying) {
-      player.play();
-    } else {
-      player.pause();
-    }
-  }, [currentTrack, isPlaying]);
+    new Player((player) => {
+      setPlayer(player);
+    });
+  }, []);
 
-  return (
-    <div className="App">
-      <Transport
-        isPlaying={isPlaying}
-        onPlay={handleOnPlay}
-        onPause={handlePause}
-        onSkipBack={handleSkipBack}
-        onSkipForward={handleSkipForward}
-      />
-    </div>
-  );
+  if (!player) {
+    return (
+      <div className="App">
+        <LinearIndeterminate />
+      </div>
+    );
+  }
+
+  return <PlayerView player={player} />;
 }
 
 export default App;
