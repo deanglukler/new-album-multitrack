@@ -1,5 +1,5 @@
 import { Howl } from 'howler';
-import { TrackData, TrackDatas, TrackHowls } from './types';
+import { TrackData, TrackDatas, TrackHowls, Volume } from './types';
 
 const isTest = process.env.NODE_ENV === 'test';
 
@@ -116,7 +116,6 @@ export class Player {
     if (isTest) return;
     this.getCurrentTrackHowls().forEach((howl) => {
       howl.play();
-      howl.volume(0.1);
     });
   }
 
@@ -162,5 +161,35 @@ export class Player {
     }
     this.restartPlayHead();
     this.play();
+  }
+
+  /**
+   * setVolumes
+   */
+  public setVolumes({ genre, commentary, masterVolume }: Volume) {
+    if (isTest) return;
+    this.howls.forEach(
+      ({
+        ACOUSTIC: acoustic,
+        ACOUSTIC_COM: acousticCom,
+        SYNTHETIC: synthetic,
+        SYNTHETIC_COM: syntheticCom,
+      }) => {
+        acousticCom.volume(0);
+        acoustic.volume(0);
+        syntheticCom.volume(0);
+        synthetic.volume(0);
+        if (genre === 'acoustic') {
+          if (commentary === 'commentary')
+            acousticCom.volume(masterVolume / 100);
+          else acoustic.volume(masterVolume / 100);
+        }
+        if (genre === 'electronic') {
+          if (commentary === 'commentary')
+            syntheticCom.volume(masterVolume / 100);
+          else synthetic.volume(masterVolume / 100);
+        }
+      }
+    );
   }
 }

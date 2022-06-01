@@ -18,3 +18,12 @@ export interface Howls {
 }
 
 export type TrackHowls = Howls[];
+
+export type Commentary = 'commentary' | 'no-commentary';
+export type Genre = 'acoustic' | 'electronic';
+
+export interface Volume {
+  genre: Genre;
+  commentary: Commentary;
+  masterVolume: number;
+}

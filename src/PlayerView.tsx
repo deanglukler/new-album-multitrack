@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { TrackData } from './types';
+import { Commentary, Genre, TrackData } from './types';
 import { Transport } from './Transport';
 import { Player } from './Player';
-import { Box } from '@mui/system';
-import { Slider, Stack, Typography } from '@mui/material';
+import {
+  FormControlLabel,
+  Radio,
+  RadioGroup,
+  Slider,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { VolumeDown, VolumeUp } from '@mui/icons-material';
 
 function PlayerView({ player }: { player: Player }) {
@@ -12,7 +18,9 @@ function PlayerView({ player }: { player: Player }) {
     player.firstTrack
   );
   const [isPlaying, setIsPlaying] = useState(false);
-  const [masterVolume, setMasterVolume] = useState(0.5);
+  const [masterVolume, setMasterVolume] = useState(50);
+  const [commentary, setCommentary] = useState<Commentary>('commentary');
+  const [genre, setGenre] = useState<Genre>('acoustic');
 
   useEffect(() => {
     if (isPlaying) {
@@ -21,6 +29,10 @@ function PlayerView({ player }: { player: Player }) {
       player.pause();
     }
   }, [currentTrack, isPlaying, player]);
+
+  useEffect(() => {
+    player.setVolumes({ genre, commentary, masterVolume });
+  }, [genre, commentary, masterVolume, player, player.loading]);
 
   const handleOnPlay = () => {
     setIsPlaying(true);
@@ -71,6 +83,44 @@ function PlayerView({ player }: { player: Player }) {
         onSkipForward={handleSkipForward}
       />
       {renderVolumeSlider()}
+      <RadioGroup
+        aria-labelledby="commentary-on-off"
+        name="commentary"
+        value={commentary}
+        onChange={(...args) => {
+          setCommentary(args[1] as Commentary);
+        }}
+      >
+        <FormControlLabel
+          value="commentary"
+          control={<Radio />}
+          label="Commentary"
+        />
+        <FormControlLabel
+          value="no-commentary"
+          control={<Radio />}
+          label="No Commentary"
+        />
+      </RadioGroup>
+      <RadioGroup
+        aria-labelledby="electronic-on-off"
+        name="electronic-acoustic-select"
+        value={genre}
+        onChange={(...args) => {
+          setGenre(args[1] as Genre);
+        }}
+      >
+        <FormControlLabel
+          value="acoustic"
+          control={<Radio />}
+          label="Acoustic"
+        />
+        <FormControlLabel
+          value="electronic"
+          control={<Radio />}
+          label="Electronic"
+        />
+      </RadioGroup>
     </Stack>
   );
 }
