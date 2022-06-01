@@ -1,3 +1,4 @@
+import { Box } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import { LinearIndeterminate } from './components/LinearIndeterminate';
@@ -14,14 +15,21 @@ function App() {
   }, []);
 
   if (!player) {
-    return (
-      <div className="App">
-        <LinearIndeterminate />
-      </div>
-    );
+    return <LinearIndeterminate />;
   }
 
-  return <PlayerView player={player} />;
+  return (
+    <Box
+      sx={{
+        height: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <PlayerView player={player} />
+    </Box>
+  );
 }
 
 export default App;

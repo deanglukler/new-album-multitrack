@@ -5,28 +5,28 @@ const isTest = process.env.NODE_ENV === 'test';
 
 const TRACKDATAS: TrackDatas = [
   {
-    title: 'Arrows Track Title',
+    title: 'Arrows',
     ACOUSTIC: { path: '1ArrowsAcoustic.mp3' },
     ACOUSTIC_COM: { path: '1ArrowsAcousticCommentary.mp3' },
     SYNTHETIC: { path: '1ArrowsSynthetic.mp3' },
     SYNTHETIC_COM: { path: '1ArrowsSyntheticCommentary.mp3' },
   },
   {
-    title: 'Arrows Track Title',
+    title: 'The One',
     ACOUSTIC: { path: '2TheOneAcoustic.mp3' },
     ACOUSTIC_COM: { path: '2TheOneAcousticCommentary.mp3' },
     SYNTHETIC: { path: '2TheOneSynthetic.mp3' },
     SYNTHETIC_COM: { path: '2TheOneSyntheticCommentary.mp3' },
   },
   {
-    title: 'Arrows Track Title',
+    title: 'Interlude B',
     ACOUSTIC: { path: '3InterludeBAcoustic.mp3' },
     ACOUSTIC_COM: { path: '3InterludeBAcousticCommentary.mp3' },
     SYNTHETIC: { path: '3InterludeBSynthetic.mp3' },
     SYNTHETIC_COM: { path: '3InterludeBSyntheticCommentary.mp3' },
   },
   {
-    title: 'Arrows Track Title',
+    title: 'Clear Of Night',
     ACOUSTIC: { path: '4ClearOfNightAcoustic.mp3' },
     ACOUSTIC_COM: { path: '4ClearOfNightAcoustic.mp3' },
     SYNTHETIC: { path: '4ClearOfNightSynthetic.mp3' },
@@ -102,6 +102,13 @@ export class Player {
     this.currentTrackIndex++;
   }
 
+  private setCurrentTrackToPrevious() {
+    if (this.currentTrackIndex === 0) {
+      return (this.currentTrackIndex = TRACKDATAS.length - 1);
+    }
+    this.currentTrackIndex--;
+  }
+
   /**
    * play
    */
@@ -124,12 +131,36 @@ export class Player {
   }
 
   /**
+   * restartPlayHead
+   */
+  public restartPlayHead() {
+    if (isTest) return;
+    this.getCurrentTrackHowls().forEach((howl) => {
+      howl.seek(0);
+    });
+  }
+
+  /**
    * playNextTrack
    */
   public playNextTrack() {
     if (isTest) return;
     this.pause();
     this.setCurrentTrackToNext();
+    this.restartPlayHead();
+    this.play();
+  }
+
+  /**
+   * playPreviousTrack
+   */
+  public playPreviousTrack() {
+    const currentSeek = this.getCurrentTrackHowls()[0].seek();
+    this.pause();
+    if (currentSeek < 2) {
+      this.setCurrentTrackToPrevious();
+    }
+    this.restartPlayHead();
     this.play();
   }
 }
