@@ -22,3 +22,7 @@ export interface Howls {
 export interface TrackHowls {
   [key: string]: Howls;
 }
+
+export enum TRACKS {
+  TRACK1 = 'TRACK1',
+}

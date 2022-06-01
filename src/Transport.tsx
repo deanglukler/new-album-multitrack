@@ -21,13 +21,13 @@ export const Transport = ({
   const renderPlayPause = () => {
     if (!isPlaying) {
       return (
-        <IconButton onClick={onPlay}>
+        <IconButton aria-label="play" onClick={onPlay}>
           <PlayArrow />
         </IconButton>
       );
     }
     return (
-      <IconButton onClick={onPause}>
+      <IconButton aria-label="pause" onClick={onPause}>
         <Pause />
       </IconButton>
     );
@@ -35,11 +35,11 @@ export const Transport = ({
 
   return (
     <Box>
-      <IconButton onClick={onSkipBack}>
+      <IconButton aria-label="skip previous" onClick={onSkipBack}>
         <SkipPrevious />
       </IconButton>
       {renderPlayPause()}
-      <IconButton onClick={onSkipForward}>
+      <IconButton aria-label="skip next" onClick={onSkipForward}>
         <SkipNext />
       </IconButton>
     </Box>

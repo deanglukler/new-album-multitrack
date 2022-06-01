@@ -4,9 +4,11 @@ import App from './App';
 
 test('renders play button', () => {
   render(<App />);
-  const playButton = screen.getByRole(/button/, { name: /play/i });
+  const playButton = screen.getByLabelText(/play/);
   expect(playButton).toBeInTheDocument();
 
-  fireEvent(playButton, new MouseEvent('click'));
-  expect(playButton).not.toBeInTheDocument();
+  fireEvent.click(playButton);
+  const pauseButton = screen.getByLabelText(/pause/);
+  expect(pauseButton).toBeInTheDocument();
+  expect(screen.queryByLabelText(/play/)).not.toBeInTheDocument();
 });
