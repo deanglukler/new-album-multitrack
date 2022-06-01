@@ -1,9 +1,12 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('renders play button', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  const playButton = screen.getByRole(/button/, { name: /play/i });
+  expect(playButton).toBeInTheDocument();
+
+  fireEvent(playButton, new MouseEvent('click'));
+  expect(playButton).not.toBeInTheDocument();
 });
