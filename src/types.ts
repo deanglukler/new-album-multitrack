@@ -10,12 +10,15 @@ export interface TrackData {
 
 export type TrackDatas = TrackData[];
 
-export interface Howls {
-  TIMELINE: Howl;
+export interface RequestHowls {
   ACOUSTIC: Howl;
   ACOUSTIC_COM: Howl;
   SYNTHETIC: Howl;
   SYNTHETIC_COM: Howl;
+}
+
+export interface Howls extends RequestHowls {
+  TIMELINE: Howl;
 }
 
 export type TrackHowls = Howls[];

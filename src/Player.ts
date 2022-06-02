@@ -1,5 +1,11 @@
 import { Howl, HowlOptions } from 'howler';
-import { TrackData, TrackDatas, TrackHowls, Volume } from './types';
+import {
+  RequestHowls,
+  TrackData,
+  TrackDatas,
+  TrackHowls,
+  Volume,
+} from './types';
 
 const isTest = process.env.NODE_ENV === 'test';
 
@@ -49,6 +55,7 @@ const TRACKDATAS: TrackDatas = [
 ];
 
 export class Player {
+  private requestHowls: RequestHowls[] = [];
   private howls: TrackHowls = [];
   private currentTrackIndex: number = 0;
 
@@ -74,16 +81,7 @@ export class Player {
 
     this.isLoading = true;
 
-    this.howls = TRACKDATAS.map((trackData) => ({
-      // howl for utility like onend
-      TIMELINE: this.createHowl({
-        isTimeline: true,
-        howlOptions: {
-          src: trackData.ACOUSTIC.path,
-          onend: this.callOnSongFinished.bind(this),
-          volume: 0,
-        },
-      }),
+    this.requestHowls = TRACKDATAS.map((trackData) => ({
       // howls that will be played..
       ACOUSTIC: this.createHowl({
         howlOptions: { src: trackData.ACOUSTIC.path },
@@ -118,20 +116,44 @@ export class Player {
       onload: () => {
         this.loadingMap[loadingMapKey] = false;
         if (Object.values(this.loadingMap).includes(true)) return;
-        this.loadedCallback(this);
+        this.onLoad();
       },
       loop: false,
       ...rest,
     });
   }
 
+  private onLoad() {
+    this.createTimelineHowls();
+    this.loadedCallback(this);
+  }
+
+  private createTimelineHowls() {
+    // timeline howls used for utility like onend
+    this.howls = this.requestHowls.map((howls, index) => {
+      return {
+        ...howls,
+        TIMELINE: this.createHowl({
+          isTimeline: true,
+          howlOptions: {
+            src: TRACKDATAS[index].ACOUSTIC.path,
+            onend: this.callOnSongFinished.bind(this),
+            volume: 0,
+            onload: () => {}, // overwrite default onload to prevent infinite loop
+          },
+        }),
+      };
+    });
+  }
+
   private getCurrentTrackHowls() {
+    if (!this.howls[this.currentTrackIndex]) return [];
     return [
-      this.howls[this.currentTrackIndex].TIMELINE,
-      this.howls[this.currentTrackIndex].ACOUSTIC,
-      this.howls[this.currentTrackIndex].ACOUSTIC_COM,
-      this.howls[this.currentTrackIndex].SYNTHETIC,
-      this.howls[this.currentTrackIndex].SYNTHETIC_COM,
+      this.howls[this.currentTrackIndex]?.TIMELINE,
+      this.howls[this.currentTrackIndex]?.ACOUSTIC,
+      this.howls[this.currentTrackIndex]?.ACOUSTIC_COM,
+      this.howls[this.currentTrackIndex]?.SYNTHETIC,
+      this.howls[this.currentTrackIndex]?.SYNTHETIC_COM,
     ];
   }
 

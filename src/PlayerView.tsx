@@ -57,7 +57,7 @@ function PlayerView() {
 
   useEffect(() => {
     player.setVolumes({ genre, commentary, masterVolume });
-  }, [genre, commentary, masterVolume]);
+  }, [genre, commentary, masterVolume, loaded]);
 
   const handleOnPlay = () => {
     setIsPlaying(true);
