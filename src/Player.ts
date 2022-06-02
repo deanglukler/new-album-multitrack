@@ -1,4 +1,4 @@
-import { Howl } from 'howler';
+import { Howl, HowlOptions } from 'howler';
 import { TrackData, TrackDatas, TrackHowls, Volume } from './types';
 
 const isTest = process.env.NODE_ENV === 'test';
@@ -75,36 +75,59 @@ export class Player {
     this.isLoading = true;
 
     this.howls = TRACKDATAS.map((trackData) => ({
-      ACOUSTIC: this.defaultHowl({ src: trackData.ACOUSTIC.path }),
-      ACOUSTIC_COM: this.defaultHowl({
-        src: trackData.ACOUSTIC_COM.path,
+      // howl for utility like onend
+      TIMELINE: this.createHowl({
+        isTimeline: true,
+        howlOptions: {
+          src: trackData.ACOUSTIC.path,
+          onend: this.callOnSongFinished.bind(this),
+          volume: 0,
+        },
       }),
-      SYNTHETIC: this.defaultHowl({
-        src: trackData.SYNTHETIC.path,
+      // howls that will be played..
+      ACOUSTIC: this.createHowl({
+        howlOptions: { src: trackData.ACOUSTIC.path },
       }),
-      SYNTHETIC_COM: this.defaultHowl({
-        src: trackData.SYNTHETIC_COM.path,
+      ACOUSTIC_COM: this.createHowl({
+        howlOptions: { src: trackData.ACOUSTIC_COM.path },
+      }),
+      SYNTHETIC: this.createHowl({
+        howlOptions: { src: trackData.SYNTHETIC.path },
+      }),
+      SYNTHETIC_COM: this.createHowl({
+        howlOptions: { src: trackData.SYNTHETIC_COM.path },
       }),
     }));
 
     this.loadedCallback = loadedCallback;
   }
 
-  private defaultHowl({ src }: { src: string }) {
-    this.loadingMap[src] = true;
+  private createHowl({
+    isTimeline = false,
+    howlOptions,
+  }: {
+    isTimeline?: boolean;
+    howlOptions: HowlOptions;
+  }) {
+    const { src, ...rest } = howlOptions;
+    const loadingMapKey = isTimeline ? `${src}--timeline` : (src as string);
+    this.loadingMap[loadingMapKey] = true;
+
     return new Howl({
       src,
       onload: () => {
-        this.loadingMap[src] = false;
+        this.loadingMap[loadingMapKey] = false;
         if (Object.values(this.loadingMap).includes(true)) return;
         this.loadedCallback(this);
       },
-      onend: this.callOnSongFinished.bind(this),
+      loop: false,
+      ...rest,
     });
   }
 
   private getCurrentTrackHowls() {
     return [
+      this.howls[this.currentTrackIndex].TIMELINE,
       this.howls[this.currentTrackIndex].ACOUSTIC,
       this.howls[this.currentTrackIndex].ACOUSTIC_COM,
       this.howls[this.currentTrackIndex].SYNTHETIC,

@@ -45,7 +45,7 @@ function PlayerView() {
       player.playNextTrack();
       setCurrentTrack(player.currentTrack);
     };
-  });
+  }, []);
 
   useEffect(() => {
     if (isPlaying) {
