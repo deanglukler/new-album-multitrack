@@ -4,29 +4,43 @@ import { TrackData, TrackDatas, TrackHowls, Volume } from './types';
 const isTest = process.env.NODE_ENV === 'test';
 
 const TRACKDATAS: TrackDatas = [
+  // {
+  //   title: 'meh',
+  //   ACOUSTIC: { path: 'meh1.wav' },
+  //   ACOUSTIC_COM: { path: '1ArrowsAcousticCommentary.mp3' },
+  //   SYNTHETIC: { path: '1ArrowsSynthetic.mp3' },
+  //   SYNTHETIC_COM: { path: '1ArrowsSyntheticCommentary.mp3' },
+  // },
+  // {
+  //   title: 'meh 2',
+  //   ACOUSTIC: { path: 'meh2.wav' },
+  //   ACOUSTIC_COM: { path: '1ArrowsAcousticCommentary.mp3' },
+  //   SYNTHETIC: { path: '1ArrowsSynthetic.mp3' },
+  //   SYNTHETIC_COM: { path: '1ArrowsSyntheticCommentary.mp3' },
+  // },
   {
-    title: 'Arrows',
+    title: '1. Arrows',
     ACOUSTIC: { path: '1ArrowsAcoustic.mp3' },
     ACOUSTIC_COM: { path: '1ArrowsAcousticCommentary.mp3' },
     SYNTHETIC: { path: '1ArrowsSynthetic.mp3' },
     SYNTHETIC_COM: { path: '1ArrowsSyntheticCommentary.mp3' },
   },
   {
-    title: 'The One',
+    title: '2. The One',
     ACOUSTIC: { path: '2TheOneAcoustic.mp3' },
     ACOUSTIC_COM: { path: '2TheOneAcousticCommentary.mp3' },
     SYNTHETIC: { path: '2TheOneSynthetic.mp3' },
     SYNTHETIC_COM: { path: '2TheOneSyntheticCommentary.mp3' },
   },
   {
-    title: 'Interlude B',
+    title: '3. Interlude B',
     ACOUSTIC: { path: '3InterludeBAcoustic.mp3' },
     ACOUSTIC_COM: { path: '3InterludeBAcousticCommentary.mp3' },
     SYNTHETIC: { path: '3InterludeBSynthetic.mp3' },
     SYNTHETIC_COM: { path: '3InterludeBSyntheticCommentary.mp3' },
   },
   {
-    title: 'Clear Of Night',
+    title: '4. Clear Of Night',
     ACOUSTIC: { path: '4ClearOfNightAcoustic.mp3' },
     ACOUSTIC_COM: { path: '4ClearOfNightAcoustic.mp3' },
     SYNTHETIC: { path: '4ClearOfNightSynthetic.mp3' },
@@ -40,6 +54,8 @@ export class Player {
 
   private isLoading: boolean = true;
   private loadingMap: { [key: string]: boolean } = {};
+
+  public onSongFinished: () => void = () => {};
 
   public get firstTrack(): TrackData {
     return TRACKDATAS[0];
@@ -83,6 +99,7 @@ export class Player {
         if (Object.values(this.loadingMap).includes(true)) return;
         this.loadedCallback(this);
       },
+      onend: this.callOnSongFinished.bind(this),
     });
   }
 
@@ -109,13 +126,19 @@ export class Player {
     this.currentTrackIndex--;
   }
 
+  private callOnSongFinished() {
+    this.onSongFinished();
+  }
+
   /**
    * play
    */
   public play() {
     if (isTest) return;
     this.getCurrentTrackHowls().forEach((howl) => {
-      howl.play();
+      if (!howl.playing()) {
+        howl.play();
+      }
     });
   }
 
@@ -144,23 +167,38 @@ export class Player {
    */
   public playNextTrack() {
     if (isTest) return;
+    this.pauseNextTrack();
+    this.play();
+  }
+
+  /**
+   * pauseNextTrack
+   */
+  public pauseNextTrack() {
+    if (isTest) return;
     this.pause();
     this.setCurrentTrackToNext();
     this.restartPlayHead();
-    this.play();
   }
 
   /**
    * playPreviousTrack
    */
   public playPreviousTrack() {
+    this.pausePreviousTrack();
+    this.play();
+  }
+
+  /**
+   * pausePreviousTrack
+   */
+  public pausePreviousTrack() {
     const currentSeek = this.getCurrentTrackHowls()[0].seek();
     this.pause();
     if (currentSeek < 2) {
       this.setCurrentTrackToPrevious();
     }
     this.restartPlayHead();
-    this.play();
   }
 
   /**
@@ -184,7 +222,7 @@ export class Player {
             acousticCom.volume(masterVolume / 100);
           else acoustic.volume(masterVolume / 100);
         }
-        if (genre === 'electronic') {
+        if (genre === 'synthetic') {
           if (commentary === 'commentary')
             syntheticCom.volume(masterVolume / 100);
           else synthetic.volume(masterVolume / 100);

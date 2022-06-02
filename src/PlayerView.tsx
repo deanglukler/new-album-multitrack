@@ -4,6 +4,7 @@ import { Commentary, Genre, TrackData } from './types';
 import { Transport } from './Transport';
 import { Player } from './Player';
 import {
+  Box,
   FormControlLabel,
   Radio,
   RadioGroup,
@@ -12,15 +13,39 @@ import {
   Typography,
 } from '@mui/material';
 import { VolumeDown, VolumeUp } from '@mui/icons-material';
+import { LinearIndeterminate } from './components/LinearIndeterminate';
 
-function PlayerView({ player }: { player: Player }) {
+let playerLoaded = false;
+const player = new Player(() => {
+  playerLoaded = true;
+});
+
+function PlayerView() {
+  const [loaded, setLoaded] = useState(false);
   const [currentTrack, setCurrentTrack] = useState<TrackData>(
     player.firstTrack
   );
   const [isPlaying, setIsPlaying] = useState(false);
   const [masterVolume, setMasterVolume] = useState(50);
-  const [commentary, setCommentary] = useState<Commentary>('commentary');
+  const [commentary, setCommentary] = useState<Commentary>('no-commentary');
   const [genre, setGenre] = useState<Genre>('acoustic');
+
+  useEffect(() => {
+    const loadedWait = setInterval(() => {
+      console.log('waiting for load..');
+      if (playerLoaded) {
+        setLoaded(true);
+        clearInterval(loadedWait);
+      }
+    }, 100);
+  }, []);
+
+  useEffect(() => {
+    player.onSongFinished = () => {
+      player.playNextTrack();
+      setCurrentTrack(player.currentTrack);
+    };
+  });
 
   useEffect(() => {
     if (isPlaying) {
@@ -28,23 +53,31 @@ function PlayerView({ player }: { player: Player }) {
     } else {
       player.pause();
     }
-  }, [currentTrack, isPlaying, player]);
+  }, [currentTrack, isPlaying]);
 
   useEffect(() => {
     player.setVolumes({ genre, commentary, masterVolume });
-  }, [genre, commentary, masterVolume, player, player.loading]);
+  }, [genre, commentary, masterVolume]);
 
   const handleOnPlay = () => {
     setIsPlaying(true);
   };
 
   const handleSkipForward = () => {
-    player.playNextTrack();
+    if (isPlaying) {
+      player.playNextTrack();
+    } else {
+      player.pauseNextTrack();
+    }
     setCurrentTrack(player.currentTrack);
   };
 
   const handleSkipBack = () => {
-    player.playPreviousTrack();
+    if (isPlaying) {
+      player.playPreviousTrack();
+    } else {
+      player.pausePreviousTrack();
+    }
     setCurrentTrack(player.currentTrack);
   };
 
@@ -72,56 +105,69 @@ function PlayerView({ player }: { player: Player }) {
     </Stack>
   );
 
+  if (!loaded) {
+    return <LinearIndeterminate />;
+  }
+
   return (
-    <Stack minWidth={250} alignItems="center">
-      <Typography align="center">{currentTrack.title}</Typography>
-      <Transport
-        isPlaying={isPlaying}
-        onPlay={handleOnPlay}
-        onPause={handlePause}
-        onSkipBack={handleSkipBack}
-        onSkipForward={handleSkipForward}
-      />
-      {renderVolumeSlider()}
-      <RadioGroup
-        aria-labelledby="commentary-on-off"
-        name="commentary"
-        value={commentary}
-        onChange={(...args) => {
-          setCommentary(args[1] as Commentary);
-        }}
-      >
-        <FormControlLabel
-          value="commentary"
-          control={<Radio />}
-          label="Commentary"
+    <Box
+      sx={{
+        height: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <Stack minWidth={250} alignItems="center">
+        <Typography align="center">{currentTrack.title}</Typography>
+        <Transport
+          isPlaying={isPlaying}
+          onPlay={handleOnPlay}
+          onPause={handlePause}
+          onSkipBack={handleSkipBack}
+          onSkipForward={handleSkipForward}
         />
-        <FormControlLabel
-          value="no-commentary"
-          control={<Radio />}
-          label="No Commentary"
-        />
-      </RadioGroup>
-      <RadioGroup
-        aria-labelledby="electronic-on-off"
-        name="electronic-acoustic-select"
-        value={genre}
-        onChange={(...args) => {
-          setGenre(args[1] as Genre);
-        }}
-      >
-        <FormControlLabel
-          value="acoustic"
-          control={<Radio />}
-          label="Acoustic"
-        />
-        <FormControlLabel
-          value="electronic"
-          control={<Radio />}
-          label="Electronic"
-        />
-      </RadioGroup>
-    </Stack>
+        {renderVolumeSlider()}
+        <RadioGroup
+          aria-labelledby="commentary-on-off"
+          name="commentary"
+          value={commentary}
+          onChange={(...args) => {
+            setCommentary(args[1] as Commentary);
+          }}
+        >
+          <FormControlLabel
+            value="no-commentary"
+            control={<Radio />}
+            label="No Commentary"
+          />
+          <FormControlLabel
+            value="commentary"
+            control={<Radio />}
+            label="Commentary"
+          />
+        </RadioGroup>
+        <RadioGroup
+          aria-labelledby="synthetic-on-off"
+          name="synthetic-acoustic-select"
+          value={genre}
+          onChange={(...args) => {
+            setGenre(args[1] as Genre);
+          }}
+        >
+          <FormControlLabel
+            value="acoustic"
+            control={<Radio />}
+            label="Acoustic"
+          />
+          <FormControlLabel
+            value="synthetic"
+            control={<Radio />}
+            label="Synthetic"
+          />
+        </RadioGroup>
+      </Stack>
+    </Box>
   );
 }
 

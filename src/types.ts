@@ -20,7 +20,7 @@ export interface Howls {
 export type TrackHowls = Howls[];
 
 export type Commentary = 'commentary' | 'no-commentary';
-export type Genre = 'acoustic' | 'electronic';
+export type Genre = 'acoustic' | 'synthetic';
 
 export interface Volume {
   genre: Genre;
