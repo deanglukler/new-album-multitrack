@@ -1,19 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { Commentary, Genre, TrackData } from './types';
+import { Genre, TrackData } from './types';
 import { Transport } from './Transport';
 import { Player } from './Player';
-import {
-  Box,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-  Slider,
-  Stack,
-  Typography,
-} from '@mui/material';
-import { VolumeDown, VolumeUp } from '@mui/icons-material';
+import { Stack, Typography } from '@mui/material';
 import { LinearIndeterminate } from './components/LinearIndeterminate';
+import { Header } from './Header';
+import { Background } from './Background';
 
 let playerLoaded = false;
 const player = new Player(() => {
@@ -27,7 +20,7 @@ function PlayerView() {
   );
   const [isPlaying, setIsPlaying] = useState(false);
   const [masterVolume, setMasterVolume] = useState(50);
-  const [commentary, setCommentary] = useState<Commentary>('no-commentary');
+  const [commentary, setCommentary] = useState<boolean>(false);
   const [genre, setGenre] = useState<Genre>('acoustic');
 
   useEffect(() => {
@@ -85,89 +78,59 @@ function PlayerView() {
     setIsPlaying(false);
   };
 
-  const renderVolumeSlider = () => (
-    <Stack
-      spacing={2}
-      direction="row"
-      sx={{ mb: 1 }}
-      alignItems="center"
-      minWidth={150}
-    >
-      <VolumeDown />
-      <Slider
-        aria-label="Volume"
-        value={masterVolume}
-        onChange={(...args) => {
-          setMasterVolume(args[1] as number);
-        }}
-      />
-      <VolumeUp />
-    </Stack>
-  );
-
-  if (!loaded) {
-    return <LinearIndeterminate />;
-  }
-
-  return (
-    <Box
-      sx={{
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
-      <Stack minWidth={250} alignItems="center">
-        <Typography align="center">{currentTrack.title}</Typography>
+  function renderPlayer() {
+    if (!isPlaying) return null;
+    return (
+      <>
         <Transport
+          currentTrack={currentTrack}
           isPlaying={isPlaying}
           onPlay={handleOnPlay}
           onPause={handlePause}
           onSkipBack={handleSkipBack}
           onSkipForward={handleSkipForward}
+          masterVolume={masterVolume}
+          onChange={(...args: unknown[]) => {
+            setMasterVolume(args[1] as number);
+          }}
         />
-        {renderVolumeSlider()}
-        <RadioGroup
-          aria-labelledby="commentary-on-off"
-          name="commentary"
-          value={commentary}
-          onChange={(...args) => {
-            setCommentary(args[1] as Commentary);
+        <Typography
+          sx={{ cursor: 'pointer' }}
+          onClick={() => {
+            setCommentary(!commentary);
           }}
         >
-          <FormControlLabel
-            value="no-commentary"
-            control={<Radio />}
-            label="No Commentary"
-          />
-          <FormControlLabel
-            value="commentary"
-            control={<Radio />}
-            label="Commentary"
-          />
-        </RadioGroup>
-        <RadioGroup
-          aria-labelledby="synthetic-on-off"
-          name="synthetic-acoustic-select"
-          value={genre}
-          onChange={(...args) => {
-            setGenre(args[1] as Genre);
+          Liner Notes
+        </Typography>
+        <Typography
+          sx={{ cursor: 'pointer' }}
+          onClick={() => {
+            if (genre === 'acoustic') {
+              setGenre('synthetic');
+            }
+            if (genre === 'synthetic') {
+              setGenre('acoustic');
+            }
           }}
         >
-          <FormControlLabel
-            value="acoustic"
-            control={<Radio />}
-            label="Acoustic"
-          />
-          <FormControlLabel
-            value="synthetic"
-            control={<Radio />}
-            label="Synthetic"
-          />
-        </RadioGroup>
+          Change Lifestyle
+        </Typography>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <Background genre={genre} commentary={commentary} isPlaying={isPlaying} />
+      <Stack
+        sx={{
+          display: 'flex',
+        }}
+      >
+        <Header loaded={loaded} handlePlay={handleOnPlay} />
+        {renderPlayer()}
       </Stack>
-    </Box>
+    </>
   );
 }
 

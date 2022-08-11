@@ -263,13 +263,11 @@ export class Player {
         syntheticCom.volume(0);
         synthetic.volume(0);
         if (genre === 'acoustic') {
-          if (commentary === 'commentary')
-            acousticCom.volume(masterVolume / 100);
+          if (commentary) acousticCom.volume(masterVolume / 100);
           else acoustic.volume(masterVolume / 100);
         }
         if (genre === 'synthetic') {
-          if (commentary === 'commentary')
-            syntheticCom.volume(masterVolume / 100);
+          if (commentary) syntheticCom.volume(masterVolume / 100);
           else synthetic.volume(masterVolume / 100);
         }
       }

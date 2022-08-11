@@ -28,6 +28,6 @@ export type Genre = 'acoustic' | 'synthetic';
 
 export interface Volume {
   genre: Genre;
-  commentary: Commentary;
+  commentary: boolean;
   masterVolume: number;
 }
