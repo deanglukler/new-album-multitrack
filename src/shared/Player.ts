@@ -64,7 +64,7 @@ export class Player {
 
   public onSongFinished: () => void = () => {};
 
-  public get firstTrack(): TrackData {
+  static firstTrack(): TrackData {
     return TRACKDATAS[0];
   }
 
@@ -272,5 +272,18 @@ export class Player {
         }
       }
     );
+  }
+
+  /**
+   * isPlaying
+   */
+  public isPlaying() {
+    let isPlaying = false;
+    this.getCurrentTrackHowls().forEach((howl) => {
+      if (howl.playing()) {
+        isPlaying = true;
+      }
+    });
+    return isPlaying;
   }
 }

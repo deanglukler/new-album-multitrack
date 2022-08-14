@@ -1,40 +1,36 @@
 import { Pause, PlayArrow, SkipNext, SkipPrevious } from '@mui/icons-material';
 import { IconButton, Slider, Stack, Typography } from '@mui/material';
-import { TrackData } from './types';
+import { usePlayer } from '../shared/hooks';
 
-type ClickHandler = (e: React.MouseEvent<HTMLButtonElement>) => void;
-
-interface TransportProps {
-  currentTrack: TrackData;
-  isPlaying: boolean;
-  onPlay: ClickHandler;
-  onPause: ClickHandler;
-  onSkipForward: ClickHandler;
-  onSkipBack: ClickHandler;
-  masterVolume: number;
-  onChange: (event: Event, value: number | number[]) => void;
-}
-
-export const Transport = ({
-  currentTrack,
-  isPlaying,
-  onSkipForward,
-  onSkipBack,
-  onPlay,
-  onPause,
-  masterVolume,
-  onChange,
-}: TransportProps) => {
+export const Transport = () => {
+  const {
+    handleOnPlay,
+    handlePause,
+    handleSkipBack,
+    handleSkipForward,
+    setMasterVolume,
+    isPlaying,
+    currentTrack,
+    masterVolume,
+  } = usePlayer();
   const renderPlayPause = () => {
     if (!isPlaying) {
       return (
-        <IconButton aria-label="play" onClick={onPlay}>
+        <IconButton
+          sx={{ paddingLeft: 0 }}
+          aria-label="play"
+          onClick={handleOnPlay}
+        >
           <PlayArrow />
         </IconButton>
       );
     }
     return (
-      <IconButton aria-label="pause" onClick={onPause}>
+      <IconButton
+        sx={{ paddingLeft: 0 }}
+        aria-label="pause"
+        onClick={handlePause}
+      >
         <Pause />
       </IconButton>
     );
@@ -47,18 +43,24 @@ export const Transport = ({
         <Typography align="center">{currentTrack.title}</Typography>
       </Stack>
       <Stack direction="row" alignItems="center">
-        <IconButton aria-label="skip previous" onClick={onSkipBack}>
+        <IconButton
+          sx={{ paddingLeft: 0 }}
+          aria-label="skip previous"
+          onClick={handleSkipBack}
+        >
           <SkipPrevious />
         </IconButton>
         <Typography align="center">Skip</Typography>
-        <IconButton aria-label="skip next" onClick={onSkipForward}>
+        <IconButton aria-label="skip next" onClick={handleSkipForward}>
           <SkipNext />
         </IconButton>
         <Slider
           sx={{ width: '60px' }}
           aria-label="Volume"
           value={masterVolume}
-          onChange={onChange}
+          onChange={(...args: unknown[]) => {
+            setMasterVolume(args[1] as number);
+          }}
         />
       </Stack>
     </Stack>
