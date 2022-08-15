@@ -2,6 +2,7 @@ import { Pause, PlayArrow, SkipNext, SkipPrevious } from '@mui/icons-material';
 import { Box, IconButton, Slider, Stack, Typography } from '@mui/material';
 import { VibeChoice } from '../shared/components/VibeChoice';
 import { usePlayer } from '../shared/hooks';
+import { muiVolumeSxOverrides } from '../shared/muiVolumeSxOverrides';
 
 export const Transport = () => {
   const {
@@ -59,7 +60,10 @@ export const Transport = () => {
           <SkipNext />
         </IconButton>
         <Slider
-          sx={{ width: '60px' }}
+          sx={{
+            width: '60px',
+            ...muiVolumeSxOverrides,
+          }}
           aria-label="Volume"
           value={masterVolume}
           onChange={(...args: unknown[]) => {

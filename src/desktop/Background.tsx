@@ -4,10 +4,12 @@ import desktopLinerGif from './assets/Desktop_LinerPic.gif';
 import desktopQuietGif from './assets/Desktop_QuietPic.gif';
 import desktopVioletGif from './assets/Desktop_VioletPic.gif';
 
-import { useBackground } from '../shared/hooks';
+import { useBackground, usePlayer } from '../shared/hooks';
+import { loadPlayer } from '../shared/loadPlayer';
 
 export function Background(): JSX.Element {
   const { display } = useBackground();
+  const { setBeganLoadingTrue } = usePlayer();
 
   const DesktopImgStyles = {
     position: 'absolute',
@@ -26,6 +28,11 @@ export function Background(): JSX.Element {
         sx={DesktopImgStyles}
         alt="Gavin Bradley"
         src={desktopLoadingPic}
+        onLoad={() => {
+          console.log('loading image loaded');
+          loadPlayer();
+          setBeganLoadingTrue();
+        }}
       />
       <Box
         component="img"

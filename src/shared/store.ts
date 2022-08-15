@@ -5,6 +5,7 @@ import { Genre, TrackData } from './types';
 interface StoreModel {
   playerState: {
     isPlaying: boolean;
+    beganLoading: boolean;
     loaded: boolean;
     currentTrack: TrackData;
     masterVolume: number;
@@ -18,6 +19,7 @@ export const store = createStore<StoreModel>({
   playerState: {
     isPlaying: false,
     loaded: false,
+    beganLoading: false,
     currentTrack: Player.firstTrack(),
     masterVolume: 75,
     commentary: false,

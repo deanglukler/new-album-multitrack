@@ -1,7 +1,9 @@
 import { Box, Stack } from '@mui/material';
 import { SocialIcons } from '../shared/components/SocialIcons';
+import { LINKS } from '../shared/constants/links';
 import { usePlayer } from '../shared/hooks';
 import { Background } from './Background';
+import { Footer } from './Footer';
 import { Header } from './Header';
 import { Transport } from './Transport';
 import { WorkLink } from './WorkLink';
@@ -20,10 +22,11 @@ export function MobileContainer(): JSX.Element {
         direction="row"
         sx={{ my: 3 }}
       >
-        <WorkLink>Solo Work</WorkLink>
-        <WorkLink>Production</WorkLink>
-        <WorkLink>Blog</WorkLink>
+        <WorkLink href={LINKS.GB_SOLO}>Solo Work</WorkLink>
+        <WorkLink href={LINKS.GB_PRODUCTION}>Production</WorkLink>
+        <WorkLink href={LINKS.GB_BLOG}>Blog</WorkLink>
       </Stack>
+      <Footer />
     </Box>
   );
 }

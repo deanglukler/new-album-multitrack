@@ -1,7 +1,6 @@
 import { useMediaQuery, useTheme } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import { Genre, TrackData } from './types';
-import { Player } from './Player';
 import { useStoreActions, useStoreState } from './store';
 
 export const useIsMobile = () => {
@@ -9,14 +8,11 @@ export const useIsMobile = () => {
   return useMediaQuery(theme.breakpoints.down('sm'));
 };
 
-let playerLoaded = false;
-export const player = new Player(() => {
-  playerLoaded = true;
-});
-
 export const usePlayer = () => {
+  const player = window.player;
   const playerState = useStoreState((store) => store.playerState);
-  const { isPlaying, genre, commentary, masterVolume, loaded } = playerState;
+  const { isPlaying, genre, commentary, masterVolume, loaded, beganLoading } =
+    playerState;
   const updatePlayerState = useStoreActions(
     (actions) => actions.updatePlayerState
   );
@@ -28,36 +24,45 @@ export const usePlayer = () => {
   );
 
   useEffect(() => {
+    if (!beganLoading) return;
     const loadedWait = setInterval(() => {
       console.log('waiting for load..');
-      if (playerLoaded) {
+      if (window.playerLoaded) {
         updatePlayerState({ loaded: true });
         clearInterval(loadedWait);
       }
     }, 100);
-  }, [updatePlayerState]);
+  }, [updatePlayerState, beganLoading]);
 
   useEffect(() => {
+    if (!player) return;
     player.onSongFinished = () => {
       player.playNextTrack();
       setCurrentTrack(player.currentTrack);
     };
-  }, [setCurrentTrack]);
+  }, [setCurrentTrack, player]);
 
   useEffect(() => {
+    if (!player) return;
     player.setVolumes({ genre, commentary, masterVolume });
-  }, [genre, commentary, masterVolume, loaded]);
+  }, [genre, commentary, masterVolume, loaded, player]);
 
   return {
+    setBeganLoadingTrue: () => {
+      updatePlayerState({ ...playerState, beganLoading: true });
+    },
     handleOnPlay: () => {
+      if (!player) return;
       player.play();
       updatePlayerState({ isPlaying: true });
     },
     handlePause: () => {
+      if (!player) return;
       player.pause();
       updatePlayerState({ isPlaying: false });
     },
     handleSkipForward: () => {
+      if (!player) return;
       if (isPlaying) {
         player.playNextTrack();
       } else {
@@ -66,6 +71,7 @@ export const usePlayer = () => {
       setCurrentTrack(player.currentTrack);
     },
     handleSkipBack: () => {
+      if (!player) return;
       if (isPlaying) {
         player.playPreviousTrack();
       } else {
@@ -86,9 +92,10 @@ export const usePlayer = () => {
   };
 };
 
+type Vibe = Genre | 'liner-notes';
+
 export const useBackground = () => {
-  type BackgroundKeys = Genre | 'liner-notes';
-  const [background, setBackground] = useState<BackgroundKeys>('acoustic');
+  const [background, setBackground] = useState<Vibe>('acoustic');
   const { isPlaying, commentary, genre } = usePlayer();
 
   useEffect(() => {
@@ -100,10 +107,45 @@ export const useBackground = () => {
   }, [commentary, genre]);
 
   return {
-    display: (bg: BackgroundKeys) => {
+    display: (bg: Vibe) => {
       if (!isPlaying) return 'none';
       if (bg === background) return 'unset';
       return 'none';
     },
   };
+};
+
+const displayNoneState = {
+  loading: 'none',
+  play: 'none',
+  violetLife: 'none',
+  quietLife: 'none',
+  linerNotes: 'none',
+};
+export const useInfoDisplay = () => {
+  const { isPlaying, commentary, genre, loaded } = usePlayer();
+  const [displayState, setDisplayState] = useState({ ...displayNoneState });
+  useEffect(() => {
+    if (!loaded) {
+      setDisplayState({ ...displayNoneState, loading: 'unset' });
+      return;
+    }
+    if (!isPlaying) {
+      setDisplayState({ ...displayNoneState, play: 'unset' });
+      return;
+    }
+    if (commentary) {
+      setDisplayState({ ...displayNoneState, linerNotes: 'unset' });
+      return;
+    }
+    if (genre === 'acoustic') {
+      setDisplayState({ ...displayNoneState, quietLife: 'unset' });
+      return;
+    }
+    if (genre === 'synthetic') {
+      setDisplayState({ ...displayNoneState, violetLife: 'unset' });
+    }
+  }, [isPlaying, commentary, genre, loaded]);
+
+  return displayState;
 };

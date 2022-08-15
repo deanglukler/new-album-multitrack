@@ -10,14 +10,6 @@ export function VibeChoice({ fontSize }: { fontSize: string }): JSX.Element {
       <Typography
         sx={vibeText}
         onClick={() => {
-          setCommentary(!commentary);
-        }}
-      >
-        Liner Notes
-      </Typography>
-      <Typography
-        sx={vibeText}
-        onClick={() => {
           if (genre === 'acoustic') {
             setGenre('synthetic');
           }
@@ -27,6 +19,14 @@ export function VibeChoice({ fontSize }: { fontSize: string }): JSX.Element {
         }}
       >
         Change Lifestyle
+      </Typography>
+      <Typography
+        sx={vibeText}
+        onClick={() => {
+          setCommentary(!commentary);
+        }}
+      >
+        Liner Notes
       </Typography>
     </Stack>
   );
