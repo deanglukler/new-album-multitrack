@@ -3,18 +3,16 @@ import { Howl } from 'howler';
 export interface TrackData {
   title: string;
   ACOUSTIC: { path: string };
-  ACOUSTIC_COM: { path: string };
   SYNTHETIC: { path: string };
-  SYNTHETIC_COM: { path: string };
+  COMMENTARY: { path: string };
 }
 
 export type TrackDatas = TrackData[];
 
 export interface RequestHowls {
   ACOUSTIC: Howl;
-  ACOUSTIC_COM: Howl;
+  COMMENTARY: Howl;
   SYNTHETIC: Howl;
-  SYNTHETIC_COM: Howl;
 }
 
 export interface Howls extends RequestHowls {
