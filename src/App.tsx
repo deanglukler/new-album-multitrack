@@ -1,10 +1,9 @@
 import { StoreProvider } from 'easy-peasy';
-import React from 'react';
 import './App.css';
 import { DesktopContainer } from './desktop/DesktopContainer';
 import { MobileContainer } from './mobile/MobileContainer';
 import { useIsMobile } from './shared/hooks';
-import { Player } from './shared/Player';
+import { Player } from './shared/player/Player';
 import { store } from './shared/store';
 
 declare global {

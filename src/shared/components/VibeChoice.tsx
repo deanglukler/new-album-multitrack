@@ -1,12 +1,22 @@
 import { Stack, Typography } from '@mui/material';
 import { usePlayer } from '../hooks';
 
-export function VibeChoice({ fontSize }: { fontSize: string }): JSX.Element {
+export function VibeChoice({
+  fontSize,
+  spacing,
+}: {
+  fontSize: string;
+  spacing: number;
+}): JSX.Element {
   const { setCommentary, setGenre, commentary, genre } = usePlayer();
-  const vibeText = { cursor: 'pointer', fontSize };
+  const vibeText = {
+    cursor: 'pointer',
+    fontSize,
+    '&:hover': { textDecoration: 'underline' },
+  };
 
   return (
-    <Stack spacing={3} direction={'row'}>
+    <Stack spacing={spacing} direction={'row'}>
       <Typography
         sx={vibeText}
         onClick={() => {
@@ -21,12 +31,12 @@ export function VibeChoice({ fontSize }: { fontSize: string }): JSX.Element {
         Change Lifestyle
       </Typography>
       <Typography
-        sx={vibeText}
+        sx={{ ...vibeText, textDecoration: commentary ? 'underline' : 'none' }}
         onClick={() => {
           setCommentary(!commentary);
         }}
       >
-        Liner Notes
+        Toggle Liner Notes
       </Typography>
     </Stack>
   );

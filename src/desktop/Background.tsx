@@ -5,7 +5,7 @@ import desktopQuietGif from './assets/Desktop_QuietPic.gif';
 import desktopVioletGif from './assets/Desktop_VioletPic.gif';
 
 import { useBackground, usePlayer } from '../shared/hooks';
-import { loadPlayer } from '../shared/loadPlayer';
+import { loadPlayer } from '../shared/player/loadPlayer';
 
 export function Background(): JSX.Element {
   const { display } = useBackground();

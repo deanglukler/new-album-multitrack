@@ -7,22 +7,17 @@ import { VibeChoice } from '../shared/components/VibeChoice';
 import { Footer } from './Footer';
 
 export function DesktopContainer(): JSX.Element {
-  const { isPlaying } = usePlayer();
-
-  function renderPlayer() {
-    if (!isPlaying) return null;
-    return (
-      <>
-        <Transport />
-        <VibeChoice fontSize="24px" />
-      </>
-    );
-  }
+  const { beganPlaying } = usePlayer();
   return (
     <Box sx={{ margin: '50px 0 0 50px' }}>
       <Background />
       <Header />
-      {renderPlayer()}
+      {beganPlaying && (
+        <>
+          <Transport />
+          <VibeChoice fontSize="24px" spacing={3} />
+        </>
+      )}
       <Footer />
     </Box>
   );

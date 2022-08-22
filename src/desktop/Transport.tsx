@@ -1,9 +1,10 @@
 import { Pause, PlayArrow, SkipNext, SkipPrevious } from '@mui/icons-material';
 import { IconButton, Slider, Stack, Typography } from '@mui/material';
-import { usePlayer } from '../shared/hooks';
+import { useCurrentTrackText, usePlayer } from '../shared/hooks';
 import { muiVolumeSxOverrides } from '../shared/muiVolumeSxOverrides';
 
 export const Transport = () => {
+  const currentTrackText = useCurrentTrackText();
   const {
     handleOnPlay,
     handlePause,
@@ -11,7 +12,6 @@ export const Transport = () => {
     handleSkipForward,
     setMasterVolume,
     isPlaying,
-    currentTrack,
     masterVolume,
   } = usePlayer();
   const renderPlayPause = () => {
@@ -41,7 +41,7 @@ export const Transport = () => {
     <Stack>
       <Stack direction="row" alignItems="center">
         {renderPlayPause()}
-        <Typography align="center">{currentTrack.title}</Typography>
+        <Typography align="center">{currentTrackText}</Typography>
       </Stack>
       <Stack direction="row" alignItems="center">
         <IconButton

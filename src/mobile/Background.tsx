@@ -4,7 +4,7 @@ import mobileLinerGif from './assets/Mobile_LinerPic.gif';
 import mobileQuietGif from './assets/Mobile_QuietPic.gif';
 import mobileVioletGif from './assets/Mobile_VioletPic.gif';
 import { useBackground, usePlayer } from '../shared/hooks';
-import { loadPlayer } from '../shared/loadPlayer';
+import { loadPlayer } from '../shared/player/loadPlayer';
 
 export function Background(): JSX.Element {
   const { display } = useBackground();

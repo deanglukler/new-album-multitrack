@@ -1,5 +1,4 @@
 import { Box, Stack } from '@mui/material';
-import { SocialIcons } from '../shared/components/SocialIcons';
 import { LINKS } from '../shared/constants/links';
 import { usePlayer } from '../shared/hooks';
 import { Background } from './Background';
@@ -9,11 +8,11 @@ import { Transport } from './Transport';
 import { WorkLink } from './WorkLink';
 
 export function MobileContainer(): JSX.Element {
-  const { isPlaying } = usePlayer();
+  const { beganPlaying } = usePlayer();
   return (
     <Box sx={{ margin: '20px' }}>
       <Header />
-      {isPlaying && <Transport />}
+      {beganPlaying && <Transport />}
       <Background />
       <Stack
         justifyContent="center"

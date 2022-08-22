@@ -1,10 +1,12 @@
 import { Pause, PlayArrow, SkipNext, SkipPrevious } from '@mui/icons-material';
 import { Box, IconButton, Slider, Stack, Typography } from '@mui/material';
 import { VibeChoice } from '../shared/components/VibeChoice';
-import { usePlayer } from '../shared/hooks';
+import { useCurrentTrackText, usePlayer } from '../shared/hooks';
 import { muiVolumeSxOverrides } from '../shared/muiVolumeSxOverrides';
 
 export const Transport = () => {
+  const currentTrackText = useCurrentTrackText();
+
   const {
     handleOnPlay,
     handlePause,
@@ -12,7 +14,6 @@ export const Transport = () => {
     handleSkipForward,
     setMasterVolume,
     isPlaying,
-    currentTrack,
     masterVolume,
   } = usePlayer();
   const renderPlayPause = () => {
@@ -42,10 +43,10 @@ export const Transport = () => {
     <Stack>
       <Stack justifyContent="center" direction="row" alignItems="center">
         {renderPlayPause()}
-        <Typography align="center">{currentTrack.title}</Typography>
+        <Typography align="center">{currentTrackText}</Typography>
       </Stack>
-      <Box sx={{ '& > div': { justifyContent: 'center' } }}>
-        <VibeChoice fontSize="16px" />
+      <Box sx={{ '& > div': { justifyContent: 'space-between' } }}>
+        <VibeChoice fontSize="16px" spacing={0} />
       </Box>
       <Stack justifyContent="center" direction="row" alignItems="center">
         <IconButton

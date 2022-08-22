@@ -1,7 +1,8 @@
 import { useMediaQuery, useTheme } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
-import { Genre, TrackData } from './types';
+import { Genre } from './types';
 import { useStoreActions, useStoreState } from './store';
+import { Player } from './player/Player';
 
 export const useIsMobile = () => {
   const theme = useTheme();
@@ -11,74 +12,104 @@ export const useIsMobile = () => {
 export const usePlayer = () => {
   const player = window.player;
   const playerState = useStoreState((store) => store.playerState);
-  const { isPlaying, genre, commentary, masterVolume, loaded, beganLoading } =
-    playerState;
+  const {
+    isPlaying,
+    genre,
+    commentary,
+    masterVolume,
+    loaded,
+    beganLoading,
+    beganPlaying,
+  } = playerState;
+
   const updatePlayerState = useStoreActions(
     (actions) => actions.updatePlayerState
   );
-  const setCurrentTrack = useCallback(
-    (track: TrackData) => {
-      updatePlayerState({ currentTrack: track });
-    },
-    [updatePlayerState]
-  );
+
+  const updateCurrentTrackInStore = useCallback(() => {
+    if (!player) throw new Error('cannot update without player');
+    const track = player.getCurrentTrack();
+    updatePlayerState({
+      currentTrack: track,
+      loaded: track.isLoaded,
+      currentTrackLoaded: track.isLoaded,
+      isPlaying: track.track?.isPlaying(),
+    });
+    if (!track.isLoaded) {
+      track.track?.trackLoad.then(() => {
+        updateCurrentTrackInStore();
+      });
+    }
+  }, [updatePlayerState, player]);
 
   useEffect(() => {
     if (!beganLoading) return;
     const loadedWait = setInterval(() => {
       console.log('waiting for load..');
       if (window.playerLoaded) {
-        updatePlayerState({ loaded: true });
+        if (!player) throw new Error('wtf no player?');
+        updatePlayerState({
+          loaded: true,
+        });
+        updateCurrentTrackInStore();
         clearInterval(loadedWait);
       }
     }, 100);
-  }, [updatePlayerState, beganLoading]);
+    return () => clearInterval(loadedWait);
+  }, [updatePlayerState, beganLoading, player, updateCurrentTrackInStore]);
 
   useEffect(() => {
     if (!player) return;
     player.onSongFinished = () => {
-      player.playNextTrack();
-      setCurrentTrack(player.currentTrack);
+      player.prepareNextTrack();
+      updateCurrentTrackInStore();
     };
-  }, [setCurrentTrack, player]);
+  }, [updateCurrentTrackInStore, player]);
 
   useEffect(() => {
     if (!player) return;
     player.setVolumes({ genre, commentary, masterVolume });
   }, [genre, commentary, masterVolume, loaded, player]);
 
+  const doIfPlayerExists = useCallback(
+    (cb: (p: Player) => void) => () => {
+      if (player) {
+        cb(player);
+      }
+    },
+    [player]
+  );
   return {
     setBeganLoadingTrue: () => {
       updatePlayerState({ ...playerState, beganLoading: true });
     },
-    handleOnPlay: () => {
-      if (!player) return;
-      player.play();
+    handleOnPlay: doIfPlayerExists((p) => {
+      p.play();
+      if (!beganPlaying) {
+        updatePlayerState({ ...playerState, beganPlaying: true });
+      }
       updatePlayerState({ isPlaying: true });
-    },
-    handlePause: () => {
-      if (!player) return;
-      player.pause();
+    }),
+    handlePause: doIfPlayerExists((p) => {
+      p.pause();
       updatePlayerState({ isPlaying: false });
-    },
-    handleSkipForward: () => {
-      if (!player) return;
+    }),
+    handleSkipForward: doIfPlayerExists((p) => {
       if (isPlaying) {
-        player.playNextTrack();
+        p.playNextTrack();
       } else {
-        player.pauseNextTrack();
+        p.prepareNextTrack();
       }
-      setCurrentTrack(player.currentTrack);
-    },
-    handleSkipBack: () => {
-      if (!player) return;
+      updateCurrentTrackInStore();
+    }),
+    handleSkipBack: doIfPlayerExists((p) => {
       if (isPlaying) {
-        player.playPreviousTrack();
+        p.playPreviousTrack();
       } else {
-        player.pausePreviousTrack();
+        p.preparePreviousTrack();
       }
-      setCurrentTrack(player.currentTrack);
-    },
+      updateCurrentTrackInStore();
+    }),
     setMasterVolume: (vol: number) => {
       updatePlayerState({ masterVolume: vol });
     },
@@ -148,4 +179,11 @@ export const useInfoDisplay = () => {
   }, [isPlaying, commentary, genre, loaded]);
 
   return displayState;
+};
+
+export const useCurrentTrackText = () => {
+  const { currentTrack, currentTrackLoaded } = usePlayer();
+  return `${currentTrack?.trackData?.title}${
+    !currentTrackLoaded ? ' LOADING..' : ''
+  }`;
 };

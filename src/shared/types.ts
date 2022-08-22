@@ -1,4 +1,5 @@
 import { Howl } from 'howler';
+import { Track } from './player/Track';
 
 export interface TrackData {
   title: string;
@@ -28,4 +29,10 @@ export interface Volume {
   genre: Genre;
   commentary: boolean;
   masterVolume: number;
+}
+
+export interface PlayerTrack {
+  track: Track | null;
+  isLoaded: boolean;
+  trackData: TrackData;
 }
