@@ -9,13 +9,13 @@ import { Footer } from './Footer';
 export function DesktopContainer(): JSX.Element {
   const { beganPlaying } = usePlayer();
   return (
-    <Box sx={{ margin: '50px 0 0 50px' }}>
+    <Box sx={{ margin: '55px 0 0 70px' }}>
       <Background />
       <Header />
       {beganPlaying && (
         <>
           <Transport />
-          <VibeChoice fontSize="20px" spacing={3} />
+          <VibeChoice fontSize="30px" spacing={3} />
         </>
       )}
       <Footer />

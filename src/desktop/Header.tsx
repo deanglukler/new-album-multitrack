@@ -6,11 +6,11 @@ import { LINKS } from '../shared/constants/links';
 
 export function Header(): JSX.Element {
   return (
-    <Stack spacing={2}>
+    <Stack>
       <Stack
-        sx={{ width: 'max-content', mb: '15px' }}
+        sx={{ width: 'max-content', mb: '24px' }}
         alignItems={'center'}
-        spacing={2}
+        spacing={4}
         direction="row"
       >
         <HeaderLink href={LINKS.GB_SOLO} target="_blank">
@@ -29,9 +29,9 @@ export function Header(): JSX.Element {
           stackSX={{
             '& .social-icon': { opacity: '0.5', '&:hover': { opacity: '1' } },
           }}
-          spacing={2}
-          height="20px"
-          width="20px"
+          spacing={4}
+          height="40px"
+          width="40px"
         />
       </Stack>
       <HeaderInfo />

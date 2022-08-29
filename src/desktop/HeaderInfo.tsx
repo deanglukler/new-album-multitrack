@@ -10,7 +10,7 @@ import { useInfoDisplay, usePlayer } from '../shared/hooks';
 
 export function HeaderInfo(): JSX.Element {
   const { handleOnPlay } = usePlayer();
-  const height = '43px';
+  const height = '70px';
   const { loading, play, violetLife, quietLife, linerNotes } = useInfoDisplay();
   return (
     <Stack spacing={2} direction="row">
