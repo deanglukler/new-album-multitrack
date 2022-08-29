@@ -10,10 +10,15 @@ export class Track {
 
   public trackLoad: Promise<unknown>;
 
-  constructor(public trackData: TrackData) {
+  constructor(public trackData: TrackData, private handleOnEnd?: () => void) {
     const [acousticHowl, acousticLoadPromise] = this.createHowl({
       options: {
         src: trackData.ACOUSTIC.path,
+        onend: () => {
+          if (this.handleOnEnd) {
+            this.handleOnEnd();
+          }
+        },
       },
     });
     const [commentaryHowl, commentaryLoadPromise] = this.createHowl({

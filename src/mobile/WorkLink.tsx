@@ -1,6 +1,7 @@
 import { Link } from '@mui/material';
 
 export const WorkLink = (props: any): JSX.Element => {
+  const { sx, ...restOfProps } = props;
   return (
     <Link
       sx={{
@@ -10,8 +11,9 @@ export const WorkLink = (props: any): JSX.Element => {
         textDecoration: 'none',
         cursor: 'pointer',
         '&:hover': { textDecoration: 'underline' },
+        ...sx,
       }}
-      {...props}
+      {...restOfProps}
     />
   );
 };

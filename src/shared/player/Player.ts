@@ -2,6 +2,24 @@ import { PlayerTrack, TrackDatas, Volume } from '../types';
 import { Track } from './Track';
 
 const TRACKDATAS: TrackDatas = [
+  // {
+  //   title: 'short dev song 1',
+  //   ACOUSTIC: { path: 'short-dev-song.wav' },
+  //   COMMENTARY: { path: 'short-dev-song.wav' },
+  //   SYNTHETIC: { path: 'short-dev-song.wav' },
+  // },
+  // {
+  //   title: 'short dev song 2',
+  //   ACOUSTIC: { path: 'short-dev-song2.wav' },
+  //   COMMENTARY: { path: 'short-dev-song2.wav' },
+  //   SYNTHETIC: { path: 'short-dev-song2.wav' },
+  // },
+  // {
+  //   title: 'short dev song 3',
+  //   ACOUSTIC: { path: 'short-dev-song3.wav' },
+  //   COMMENTARY: { path: 'short-dev-song3.wav' },
+  //   SYNTHETIC: { path: 'short-dev-song3.wav' },
+  // },
   {
     title: '1. Arrows',
     ACOUSTIC: { path: '1ArrowsAcoustic.mp3' },
@@ -29,7 +47,7 @@ const TRACKDATAS: TrackDatas = [
 ];
 
 export class Player {
-  public onSongFinished: () => void = () => {};
+  public onSongFinished: (() => void) | null = null;
   public isPlaying: boolean = false;
 
   private isLoadingFirstSong: boolean = true;
@@ -57,7 +75,12 @@ export class Player {
     }
     const nextTrackToLoad = this.tracks[nextUnloadedTrackIndex];
     console.log(`Loading track ${nextTrackToLoad.trackData.title}`);
-    const track = new Track(this.tracks[nextUnloadedTrackIndex].trackData);
+    const track = new Track(
+      this.tracks[nextUnloadedTrackIndex].trackData,
+      () => {
+        this.onTrackEnd();
+      }
+    );
     nextTrackToLoad.track = track;
     track.trackLoad
       .then(() => {
@@ -102,7 +125,10 @@ export class Player {
     }
   }
 
-  private callOnSongFinished() {
+  private onTrackEnd() {
+    if (!this.onSongFinished) {
+      return console.error('no onSongFinished function defined');
+    }
     this.onSongFinished();
   }
 
@@ -132,9 +158,10 @@ export class Player {
    * restartPlayHead
    */
   public restartPlayHead() {
-    if (this.currentTrack.track && this.currentTrack.isLoaded) {
-      this.currentTrack.track.restartPlayhead();
+    if (!this.currentTrack.track) {
+      return console.error('cant restart playhead on null track');
     }
+    this.currentTrack.track.restartPlayhead();
   }
 
   /**
@@ -158,15 +185,13 @@ export class Player {
    * preparePreviousTrack
    */
   public preparePreviousTrack() {
-    if (this.currentTrack.track && this.currentTrack.isLoaded) {
-      const currentSeek = this.currentTrack.track.getCurrentSeek();
-      if (currentSeek > 2) {
-        this.restartPlayHead();
-      } else {
-        this.pause();
-        this.setCurrentTrackToPrevious();
-        this.restartPlayHead();
-      }
+    const currentSeek = this.currentTrack.track?.getCurrentSeek() || 0;
+    if (currentSeek > 2) {
+      this.restartPlayHead();
+    } else {
+      this.pause();
+      this.setCurrentTrackToPrevious();
+      this.restartPlayHead();
     }
   }
 

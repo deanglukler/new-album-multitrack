@@ -61,7 +61,7 @@ export const usePlayer = () => {
   useEffect(() => {
     if (!player) return;
     player.onSongFinished = () => {
-      player.prepareNextTrack();
+      player.playNextTrack();
       updateCurrentTrackInStore();
     };
   }, [updateCurrentTrackInStore, player]);
