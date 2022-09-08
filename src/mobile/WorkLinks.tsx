@@ -21,9 +21,6 @@ export function WorkLinks() {
       <WorkLink sx={{ my: 1 }} href={LINKS.GB_BLOG} target="_blank">
         Blog
       </WorkLink>
-      <WorkLink sx={{ my: 1 }} href={LINKS.GB_LYRICS} target="_blank">
-        Read Lyrics
-      </WorkLink>
     </Stack>
   );
 }

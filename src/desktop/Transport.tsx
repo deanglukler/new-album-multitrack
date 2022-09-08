@@ -3,7 +3,7 @@ import { IconButton, Slider, Stack, Typography } from '@mui/material';
 import { useCurrentTrackText, usePlayer } from '../shared/hooks';
 import { muiVolumeSxOverrides } from '../shared/muiVolumeSxOverrides';
 
-const iconSX = { height: '50px', width: '50px' };
+const iconSX = { height: '25px', width: '25px' };
 
 export const Transport = () => {
   const currentTrackText = useCurrentTrackText();
@@ -39,7 +39,7 @@ export const Transport = () => {
     <Stack sx={{ ml: '-7px' }}>
       <Stack direction="row" alignItems="center">
         {renderPlayPause()}
-        <Typography fontSize={28} align="center">
+        <Typography fontSize={14} align="center">
           {currentTrackText}
         </Typography>
       </Stack>
@@ -51,7 +51,7 @@ export const Transport = () => {
         >
           <SkipPrevious sx={iconSX} />
         </IconButton>
-        <Typography fontSize={28} align="center">
+        <Typography fontSize={14} align="center">
           Skip
         </Typography>
         <IconButton
@@ -62,7 +62,7 @@ export const Transport = () => {
           <SkipNext sx={iconSX} />
         </IconButton>
         <Slider
-          sx={{ ml: '20px', width: '110px', ...muiVolumeSxOverrides }}
+          sx={{ ml: '20px', width: '80px', ...muiVolumeSxOverrides }}
           aria-label="Volume"
           value={masterVolume}
           onChange={(...args: unknown[]) => {

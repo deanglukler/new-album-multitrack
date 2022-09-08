@@ -8,9 +8,9 @@ export function Header(): JSX.Element {
   return (
     <Stack>
       <Stack
-        sx={{ width: 'max-content', mb: '24px' }}
+        sx={{ width: 'max-content', mb: '12px' }}
         alignItems={'center'}
-        spacing={4}
+        spacing={2}
         direction="row"
       >
         <HeaderLink href={LINKS.GB_SOLO} target="_blank">
@@ -22,16 +22,13 @@ export function Header(): JSX.Element {
         <HeaderLink href={LINKS.GB_BLOG} target="_blank">
           Blog
         </HeaderLink>
-        <HeaderLink href={LINKS.GB_LYRICS} target="_blank">
-          Read Lyrics
-        </HeaderLink>
         <SocialIcons
           stackSX={{
             '& .social-icon': { opacity: '0.5', '&:hover': { opacity: '1' } },
           }}
-          spacing={4}
-          height="40px"
-          width="40px"
+          spacing={2}
+          height="20px"
+          width="20px"
         />
       </Stack>
       <HeaderInfo />

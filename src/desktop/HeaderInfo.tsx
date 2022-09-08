@@ -1,4 +1,4 @@
-import { Box, Stack } from '@mui/material';
+import { Box } from '@mui/material';
 import desktopLoadingGif from './assets/Desktop_Loading.gif';
 import desktopPlayGif from './assets/Desktop_PlayPrompt.gif';
 import desktopNamePic from './assets/Desktop_Name.png';
@@ -7,13 +7,14 @@ import desktopQuietTitle from './assets/Desktop_QuietTitle.png';
 import desktopVioletTitle from './assets/Desktop_VioletTitle.png';
 
 import { useInfoDisplay, usePlayer } from '../shared/hooks';
+import { LoadingBar } from '../shared/components/LoadingBar';
 
 export function HeaderInfo(): JSX.Element {
-  const { handleOnPlay } = usePlayer();
-  const height = '70px';
+  const { handleOnPlay, currentTrackLoaded, currentTrack } = usePlayer();
+  const height = '35px';
   const { loading, play, violetLife, quietLife, linerNotes } = useInfoDisplay();
   return (
-    <Stack spacing={2} direction="row">
+    <Box sx={{ display: 'flex' }}>
       <Box
         sx={{ height }}
         component="img"
@@ -55,6 +56,9 @@ export function HeaderInfo(): JSX.Element {
         src={desktopVioletTitle}
         alt="play"
       />
-    </Stack>
+      <Box sx={{ ml: '-20px' }}>
+        <LoadingBar finished={currentTrackLoaded} currentTrack={currentTrack} />
+      </Box>
+    </Box>
   );
 }

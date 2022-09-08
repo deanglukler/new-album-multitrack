@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import desktopLoadingPic from './assets/Desktop_LoadingPic.jpg';
+import desktopLoadingPic from './assets/Desktop_LoadingPic.png';
 import desktopLinerGif from './assets/Desktop_LinerPic.gif';
 import desktopQuietGif from './assets/Desktop_QuietPic.gif';
 import desktopVioletGif from './assets/Desktop_VioletPic.gif';

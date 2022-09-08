@@ -1,3 +1,4 @@
+import { createTheme, ThemeProvider } from '@mui/material';
 import { StoreProvider } from 'easy-peasy';
 import './App.css';
 import { DesktopContainer } from './desktop/DesktopContainer';
@@ -5,6 +6,7 @@ import { MobileContainer } from './mobile/MobileContainer';
 import { useIsMobile } from './shared/hooks';
 import { Player } from './shared/player/Player';
 import { store } from './shared/store';
+import { themeOptions } from './shared/theme';
 
 declare global {
   interface Window {
@@ -25,7 +27,9 @@ function App() {
   }
   return (
     <StoreProviderOverride store={store}>
-      {renderContainer()}
+      <ThemeProvider theme={createTheme(themeOptions)}>
+        {renderContainer()}
+      </ThemeProvider>
     </StoreProviderOverride>
   );
 }

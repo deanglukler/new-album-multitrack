@@ -1,50 +1,6 @@
-import { PlayerTrack, TrackDatas, Volume } from '../types';
+import { PlayerTrack, Volume } from '../types';
 import { Track } from './Track';
-
-const TRACKDATAS: TrackDatas = [
-  // {
-  //   title: 'short dev song 1',
-  //   ACOUSTIC: { path: 'short-dev-song.wav' },
-  //   COMMENTARY: { path: 'short-dev-song.wav' },
-  //   SYNTHETIC: { path: 'short-dev-song.wav' },
-  // },
-  // {
-  //   title: 'short dev song 2',
-  //   ACOUSTIC: { path: 'short-dev-song2.wav' },
-  //   COMMENTARY: { path: 'short-dev-song2.wav' },
-  //   SYNTHETIC: { path: 'short-dev-song2.wav' },
-  // },
-  // {
-  //   title: 'short dev song 3',
-  //   ACOUSTIC: { path: 'short-dev-song3.wav' },
-  //   COMMENTARY: { path: 'short-dev-song3.wav' },
-  //   SYNTHETIC: { path: 'short-dev-song3.wav' },
-  // },
-  {
-    title: '1. Arrows',
-    ACOUSTIC: { path: '1ArrowsAcoustic.mp3' },
-    COMMENTARY: { path: '1ArrowsAcousticCommentary.mp3' },
-    SYNTHETIC: { path: '1ArrowsSynthetic.mp3' },
-  },
-  {
-    title: '2. The One',
-    ACOUSTIC: { path: '2TheOneAcoustic.mp3' },
-    COMMENTARY: { path: '2TheOneAcousticCommentary.mp3' },
-    SYNTHETIC: { path: '2TheOneSynthetic.mp3' },
-  },
-  {
-    title: '3. Interlude B',
-    ACOUSTIC: { path: '3InterludeBAcoustic.mp3' },
-    COMMENTARY: { path: '3InterludeBAcousticCommentary.mp3' },
-    SYNTHETIC: { path: '3InterludeBSynthetic.mp3' },
-  },
-  {
-    title: '4. Clear Of Night',
-    ACOUSTIC: { path: '4ClearOfNightAcoustic.mp3' },
-    COMMENTARY: { path: '4ClearOfNightAcoustic.mp3' },
-    SYNTHETIC: { path: '4ClearOfNightSynthetic.mp3' },
-  },
-];
+import { TRACKDATAS } from './TRACKDATAS';
 
 export class Player {
   public onSongFinished: (() => void) | null = null;

@@ -1,4 +1,5 @@
-import { Stack, Typography } from '@mui/material';
+import { Link, Stack, Typography } from '@mui/material';
+import { LINKS } from '../constants/links';
 import { usePlayer } from '../hooks';
 
 export function VibeChoice({
@@ -12,11 +13,13 @@ export function VibeChoice({
   const vibeText = {
     cursor: 'pointer',
     fontSize,
+    color: 'black',
+    textDecoration: 'none',
     '&:hover': { textDecoration: 'underline' },
   };
 
   return (
-    <Stack spacing={spacing} direction={'row'}>
+    <Stack spacing={spacing} alignItems="center" direction={'row'}>
       <Typography
         sx={vibeText}
         onClick={() => {
@@ -36,8 +39,11 @@ export function VibeChoice({
           setCommentary(!commentary);
         }}
       >
-        Toggle Liner Notes
+        Toggle Notes
       </Typography>
+      <Link sx={{ ...vibeText }} href={LINKS.GB_LYRICS} target="_blank">
+        Read Lyrics
+      </Link>
     </Stack>
   );
 }
