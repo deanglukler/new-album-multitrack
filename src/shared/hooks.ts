@@ -45,7 +45,7 @@ export const usePlayer = () => {
   useEffect(() => {
     if (!beganLoading) return;
     const loadedWait = setInterval(() => {
-      console.log('waiting for load..');
+      console.log('waiting for first track to load..');
       if (window.playerLoaded) {
         if (!player) throw new Error('wtf no player?');
         updatePlayerState({

@@ -13,15 +13,18 @@ export class Player {
   private volume: Volume | null = null;
 
   constructor(private loadedFirstSongCallback: () => void) {
-    this.tracks = TRACKDATAS.map((trackData) => {
-      return { isLoaded: false, track: null, trackData };
+    this.tracks = TRACKDATAS.map((trackData, index) => {
+      return { isLoaded: false, track: null, trackData, index };
     });
     this.firstTrack = this.tracks[0];
     this.currentTrack = this.firstTrack;
-    this.loadNextTrack();
+    this.loadTrack(this.currentTrack).then(() => {
+      this.loadSurroundingTracks();
+    });
+    // this.loadNextUnloadedTrack();
   }
 
-  private loadNextTrack() {
+  private loadNextUnloadedTrack() {
     const nextUnloadedTrackIndex = this.tracks.findIndex(
       ({ track }) => track === null
     );
@@ -30,26 +33,44 @@ export class Player {
       return;
     }
     const nextTrackToLoad = this.tracks[nextUnloadedTrackIndex];
-    console.log(`Loading track ${nextTrackToLoad.trackData.title}`);
-    const track = new Track(
-      this.tracks[nextUnloadedTrackIndex].trackData,
-      () => {
-        this.onTrackEnd();
-      }
-    );
-    nextTrackToLoad.track = track;
-    track.trackLoad
+
+    this.loadTrack(nextTrackToLoad).then(() => {
+      this.loadNextUnloadedTrack();
+    });
+  }
+
+  private loadTrack(trackToLoad: PlayerTrack) {
+    console.log(`Loading track ${trackToLoad.trackData.title}`);
+    const track = new Track(trackToLoad.trackData, () => {
+      this.onTrackEnd();
+    });
+    trackToLoad.track = track;
+    return track.trackLoad
       .then(() => {
         if (this.isLoadingFirstSong) {
           this.isLoadingFirstSong = false;
           this.loadedFirstSongCallback();
         }
-        this.loadNextTrack();
-        nextTrackToLoad.isLoaded = true;
+        trackToLoad.isLoaded = true;
+        console.log(`loaded track ${trackToLoad.trackData.title}`);
       })
       .catch(() => {
         console.log(`ERROR loading track ${track.trackData.title}`);
       });
+  }
+
+  private unloadAllUnplayingTracks() {
+    this.tracks.forEach((track) => {
+      if (track.index !== this.getCurrentTrackIndex()) {
+        track.track = null;
+      }
+    });
+    console.log('unloaded all tracks');
+  }
+
+  private loadSurroundingTracks() {
+    this.loadTrack(this.tracks[this.getPreviousTrackIndex()]);
+    this.loadTrack(this.tracks[this.getNextTrackIndex()]);
   }
 
   private getCurrentTrackIndex() {
@@ -63,22 +84,34 @@ export class Player {
     return this.currentTrack;
   }
 
-  private setCurrentTrackToNext() {
-    const currentTrackIndex = this.getCurrentTrackIndex();
-    if (currentTrackIndex === this.tracks.length - 1) {
-      this.currentTrack = this.tracks[0];
+  private getNextTrackIndex() {
+    if (this.getCurrentTrackIndex() === this.tracks.length - 1) {
+      return 0;
     } else {
-      this.currentTrack = this.tracks[currentTrackIndex + 1];
+      return this.getCurrentTrackIndex() + 1;
     }
   }
 
-  private setCurrentTrackToPrevious() {
-    const currentTrackIndex = this.getCurrentTrackIndex();
-    if (currentTrackIndex === 0) {
-      this.currentTrack = this.tracks[this.tracks.length - 1];
+  private getPreviousTrackIndex() {
+    if (this.getCurrentTrackIndex() === 0) {
+      return this.tracks.length - 1;
     } else {
-      this.currentTrack = this.tracks[currentTrackIndex - 1];
+      return this.getCurrentTrackIndex() - 1;
     }
+  }
+
+  private setCurrentTrackToNext() {
+    this.currentTrack = this.tracks[this.getNextTrackIndex()];
+
+    this.unloadAllUnplayingTracks();
+    this.loadSurroundingTracks();
+  }
+
+  private setCurrentTrackToPrevious() {
+    this.currentTrack = this.tracks[this.getPreviousTrackIndex()];
+
+    this.unloadAllUnplayingTracks();
+    this.loadSurroundingTracks();
   }
 
   private onTrackEnd() {

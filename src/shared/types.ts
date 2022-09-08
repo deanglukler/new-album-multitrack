@@ -32,6 +32,7 @@ export interface Volume {
 }
 
 export interface PlayerTrack {
+  index: number;
   track: Track | null;
   isLoaded: boolean;
   trackData: TrackData;
