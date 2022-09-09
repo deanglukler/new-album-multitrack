@@ -19,7 +19,7 @@ export class Player {
     this.firstTrack = this.tracks[0];
     this.currentTrack = this.firstTrack;
     this.loadTrack(this.currentTrack).then(() => {
-      this.loadSurroundingTracks();
+      // this.loadSurroundingTracks();
     });
     // this.loadNextUnloadedTrack();
   }
@@ -71,9 +71,23 @@ export class Player {
     console.log('unloaded all tracks');
   }
 
+  private unloadAllTracks() {
+    this.tracks.forEach((track) => {
+      if (track.track) {
+        track.track.unloadHowls();
+        track.track = null;
+      }
+    });
+    console.log('unloaded all tracks');
+  }
+
   private loadSurroundingTracks() {
     this.loadTrack(this.tracks[this.getPreviousTrackIndex()]);
     this.loadTrack(this.tracks[this.getNextTrackIndex()]);
+  }
+
+  private loadCurrentTrack() {
+    this.loadTrack(this.tracks[this.getCurrentTrackIndex()]);
   }
 
   private getCurrentTrackIndex() {
@@ -106,15 +120,15 @@ export class Player {
   private setCurrentTrackToNext() {
     this.currentTrack = this.tracks[this.getNextTrackIndex()];
 
-    this.unloadAllUnplayingTracks();
-    this.loadSurroundingTracks();
+    this.unloadAllTracks();
+    this.loadCurrentTrack();
   }
 
   private setCurrentTrackToPrevious() {
     this.currentTrack = this.tracks[this.getPreviousTrackIndex()];
 
-    this.unloadAllUnplayingTracks();
-    this.loadSurroundingTracks();
+    this.unloadAllTracks();
+    this.loadCurrentTrack();
   }
 
   private onTrackEnd() {
