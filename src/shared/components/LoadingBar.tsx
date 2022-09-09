@@ -45,28 +45,17 @@ export function LoadingBar({
     setProgress(0);
   }, [finished, currentTrack]);
 
-  if (mobile) {
-    return (
-      <Fade in={!finished} timeout={{ enter: 1000, exit: 600 }}>
-        <LinearProgress
-          sx={{
-            mt: '0 !important',
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-          }}
-          variant="determinate"
-          value={progress}
-        />
-      </Fade>
-    );
-  }
-
   return (
     <Fade in={!finished} timeout={{ enter: 1000, exit: 600 }}>
-      <CircularProgress
-        sx={{ color: 'gray' }}
+      <LinearProgress
+        color="info"
+        sx={{
+          mt: '0 !important',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+        }}
         variant="determinate"
         value={progress}
       />
