@@ -15,6 +15,7 @@ export const Transport = () => {
     setMasterVolume,
     isPlaying,
     masterVolume,
+    currentTrackLoaded,
   } = usePlayer();
   const renderPlayPause = () => {
     if (!isPlaying) {
@@ -23,6 +24,7 @@ export const Transport = () => {
           sx={{ padding: 0 }}
           aria-label="play"
           onClick={handleOnPlay}
+          disabled={!currentTrackLoaded}
         >
           <PlayArrow sx={iconSX} />
         </IconButton>

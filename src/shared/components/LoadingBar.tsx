@@ -1,4 +1,4 @@
-import { CircularProgress, Fade, LinearProgress } from '@mui/material';
+import { Fade, LinearProgress } from '@mui/material';
 import { useEffect, useState } from 'react';
 
 export function LoadingBar({
