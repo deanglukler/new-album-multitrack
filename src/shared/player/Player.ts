@@ -62,6 +62,7 @@ export class Player {
   private unloadAllUnplayingTracks() {
     this.tracks.forEach((track) => {
       if (track.index !== this.getCurrentTrackIndex()) {
+        track.track.unloadHowls();
         track.track = null;
       }
     });

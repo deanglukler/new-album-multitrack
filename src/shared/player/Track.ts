@@ -108,4 +108,11 @@ export class Track {
   public isPlaying() {
     return this.controlHowl.playing();
   }
+
+  public unloadHowls() {
+    this.controlHowl.unload();
+    this.acousticHowl.unload();
+    this.syntheticHowl.unload();
+    this.commentaryHowl.unload();
+  }
 }
