@@ -10,14 +10,15 @@ export class Track {
 
   public trackLoad: Promise<unknown>;
 
-  constructor(public trackData: TrackData, private handleOnEnd?: () => void) {
+  constructor(
+    public trackData: TrackData,
+    private options: { handleOnEnd: () => void }
+  ) {
     const [acousticHowl, acousticLoadPromise] = this.createHowl({
       options: {
         src: trackData.ACOUSTIC.path,
         onend: () => {
-          if (this.handleOnEnd) {
-            this.handleOnEnd();
-          }
+          this.options.handleOnEnd();
         },
       },
     });
@@ -61,6 +62,7 @@ export class Track {
       options.onloaderror = () => reject();
       createdHowl = new Howl({
         loop: false,
+        html5: true,
         ...options,
       });
     });
@@ -93,14 +95,22 @@ export class Track {
   }
 
   public setVolumes({ genre, commentary, masterVolume }: Volume) {
+    // this will only work on desktop, using html5 audio
     this.acousticHowl.volume(0);
+    this.acousticHowl.mute(true);
     this.commentaryHowl.volume(0);
+    this.commentaryHowl.mute(true);
     this.syntheticHowl.volume(0);
+    this.syntheticHowl.mute(true);
+
     if (commentary) {
+      this.commentaryHowl.mute(false);
       this.commentaryHowl.volume(masterVolume / 100);
     } else if (genre === 'acoustic') {
+      this.acousticHowl.mute(false);
       this.acousticHowl.volume(masterVolume / 100);
     } else if (genre === 'synthetic') {
+      this.syntheticHowl.mute(false);
       this.syntheticHowl.volume(masterVolume / 100);
     }
   }

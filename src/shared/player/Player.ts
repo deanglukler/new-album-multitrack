@@ -19,7 +19,9 @@ export class Player {
     this.firstTrack = this.tracks[0];
     this.currentTrack = this.firstTrack;
     this.loadTrack(this.currentTrack).then(() => {
-      // this.loadSurroundingTracks();
+      this.loadSurroundingTracks().then(() => {
+        this.loadNextUnloadedTrack();
+      });
     });
     // this.loadNextUnloadedTrack();
   }
@@ -41,8 +43,10 @@ export class Player {
 
   private loadTrack(trackToLoad: PlayerTrack) {
     console.log(`Loading track ${trackToLoad.trackData.title}`);
-    const track = new Track(trackToLoad.trackData, () => {
-      this.onTrackEnd();
+    const track = new Track(trackToLoad.trackData, {
+      handleOnEnd: () => {
+        this.onTrackEnd();
+      },
     });
     trackToLoad.track = track;
     return track.trackLoad
@@ -56,6 +60,8 @@ export class Player {
       })
       .catch(() => {
         console.log(`ERROR loading track ${track.trackData.title}`);
+        console.log(`ATTEMPTING RELOAD track ${track.trackData.title}`);
+        this.loadTrack(trackToLoad);
       });
   }
 
@@ -82,8 +88,10 @@ export class Player {
   }
 
   private loadSurroundingTracks() {
-    this.loadTrack(this.tracks[this.getPreviousTrackIndex()]);
-    this.loadTrack(this.tracks[this.getNextTrackIndex()]);
+    return Promise.all([
+      this.loadTrack(this.tracks[this.getPreviousTrackIndex()]),
+      this.loadTrack(this.tracks[this.getNextTrackIndex()]),
+    ]);
   }
 
   private loadCurrentTrack() {
@@ -120,15 +128,15 @@ export class Player {
   private setCurrentTrackToNext() {
     this.currentTrack = this.tracks[this.getNextTrackIndex()];
 
-    this.unloadAllTracks();
-    this.loadCurrentTrack();
+    // this.unloadAllTracks();
+    // this.loadCurrentTrack();
   }
 
   private setCurrentTrackToPrevious() {
     this.currentTrack = this.tracks[this.getPreviousTrackIndex()];
 
-    this.unloadAllTracks();
-    this.loadCurrentTrack();
+    // this.unloadAllTracks();
+    // this.loadCurrentTrack();
   }
 
   private onTrackEnd() {
@@ -147,8 +155,11 @@ export class Player {
     if (this.currentTrack.track && this.currentTrack.isLoaded) {
       this.setVolumes();
       this.currentTrack.track.play();
+      this.isPlaying = true;
+    } else {
+      this.isPlaying = false;
     }
-    this.isPlaying = this.currentTrack.track.isPlaying();
+    // this.isPlaying = this.currentTrack.track.isPlaying();
   }
 
   /**
@@ -157,6 +168,7 @@ export class Player {
   public pause() {
     if (this.currentTrack.track && this.currentTrack.isLoaded) {
       this.currentTrack.track.pause();
+      this.isPlaying = false;
     }
   }
 

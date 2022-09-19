@@ -33,7 +33,7 @@ export const usePlayer = () => {
       currentTrack: track,
       loaded: track.isLoaded,
       currentTrackLoaded: track.isLoaded,
-      isPlaying: track.track?.isPlaying(),
+      isPlaying: player.isPlaying,
     });
     if (!track.isLoaded) {
       track.track?.trackLoad.then(() => {
