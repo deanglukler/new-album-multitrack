@@ -15,7 +15,7 @@ export function VibeChoice({
     fontSize,
     color: 'black',
     textDecoration: 'none',
-    '&:hover': { sm: { textDecoration: 'underline' } },
+    '&:hover': { lg: { textDecoration: 'underline' } },
   };
 
   return (
