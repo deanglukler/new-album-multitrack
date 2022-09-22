@@ -144,7 +144,7 @@ type Vibe = Genre | 'liner-notes';
 
 export const useBackground = () => {
   const [background, setBackground] = useState<Vibe>('acoustic');
-  const { isPlaying, commentary, genre } = usePlayer();
+  const { isPlaying, commentary, genre, beganPlaying } = usePlayer();
 
   useEffect(() => {
     if (commentary) {
@@ -156,7 +156,7 @@ export const useBackground = () => {
 
   return {
     display: (bg: Vibe) => {
-      if (!isPlaying) return 'none';
+      if (!isPlaying && !beganPlaying) return 'none';
       if (bg === background) return 'unset';
       return 'none';
     },
@@ -171,14 +171,14 @@ const displayNoneState = {
   linerNotes: 'none',
 };
 export const useInfoDisplay = () => {
-  const { isPlaying, commentary, genre, loaded } = usePlayer();
+  const { isPlaying, commentary, genre, loaded, beganPlaying } = usePlayer();
   const [displayState, setDisplayState] = useState({ ...displayNoneState });
   useEffect(() => {
     if (!loaded) {
       setDisplayState({ ...displayNoneState, loading: 'unset' });
       return;
     }
-    if (!isPlaying) {
+    if (!isPlaying && !beganPlaying) {
       setDisplayState({ ...displayNoneState, play: 'unset' });
       return;
     }
@@ -193,7 +193,7 @@ export const useInfoDisplay = () => {
     if (genre === 'synthetic') {
       setDisplayState({ ...displayNoneState, violetLife: 'unset' });
     }
-  }, [isPlaying, commentary, genre, loaded]);
+  }, [isPlaying, commentary, genre, loaded, beganPlaying]);
 
   return displayState;
 };
