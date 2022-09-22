@@ -48,7 +48,6 @@ export function LoadingBar({
   return (
     <Fade in={!finished} timeout={{ enter: 1000, exit: 600 }}>
       <LinearProgress
-        color="info"
         sx={{
           mt: '0 !important',
           position: 'fixed',
