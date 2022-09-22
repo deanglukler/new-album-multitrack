@@ -9,6 +9,23 @@ export const useIsMobile = () => {
   return useMediaQuery(theme.breakpoints.down('sm'));
 };
 
+export default function useDeviceDetect() {
+  const [isMobile, setMobile] = useState(false);
+
+  useEffect(() => {
+    const userAgent =
+      typeof window.navigator === 'undefined' ? '' : navigator.userAgent;
+    const mobile = Boolean(
+      userAgent.match(
+        /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
+      )
+    );
+    setMobile(mobile);
+  }, []);
+
+  return { isMobile };
+}
+
 export const usePlayer = () => {
   const player = window.player;
   const playerState = useStoreState((store) => store.playerState);
