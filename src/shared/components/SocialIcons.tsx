@@ -1,4 +1,5 @@
 import { Box, Link, Stack, SxProps } from '@mui/material';
+import { MouseEvent } from 'react';
 import Link1_Share from '../assets/Link1_Share.png';
 import Link2_Spotify from '../assets/Link2_Spotify.png';
 import Link3_AppleMusic from '../assets/Link3_AppleMusic.png';
@@ -29,23 +30,24 @@ export function SocialIcons({
       spacing={spacing}
       direction={'row'}
     >
-      <Link
-        onClick={(e) => {
-          if (navigator.share) {
-            e.preventDefault();
-            navigator
-              .share({
-                title: document.title,
-                text: 'Hello World',
-                url: window.location.href,
-              })
-              .then(() => console.log('Successful share'))
-              .catch((error) => console.log('Error sharing:', error));
-          }
-        }}
-        href={LINKS.GB_SITE}
-      >
+      <Link>
         <Box
+          onClick={(e: MouseEvent) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (navigator.share) {
+              navigator
+                .share({
+                  title: 'Gavin Bradley',
+                  text: "Gavin Bradley's Music",
+                  url: LINKS.GB_SITE,
+                })
+                .then(() => console.log('Successful share'))
+                .catch((error) => console.log('Error sharing:', error));
+            } else {
+              window.open(`mailto:?&body=${LINKS.GB_SITE}`);
+            }
+          }}
           sx={imgSx}
           className="social-icon"
           component="img"
