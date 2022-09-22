@@ -3,7 +3,6 @@ import { usePlayer } from '../shared/hooks';
 import { Transport } from './Transport';
 import { Background } from './Background';
 import { Header } from './Header';
-import { VibeChoice } from '../shared/components/VibeChoice';
 import { Footer } from './Footer';
 
 export function DesktopContainer(): JSX.Element {
@@ -12,12 +11,7 @@ export function DesktopContainer(): JSX.Element {
     <Box sx={{ margin: '27px 0 0 35px' }}>
       <Background />
       <Header />
-      {beganPlaying && (
-        <>
-          <Transport />
-          <VibeChoice fontSize="18px" spacing={3} />
-        </>
-      )}
+      {beganPlaying && <Transport />}
       <Footer />
     </Box>
   );

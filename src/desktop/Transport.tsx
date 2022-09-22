@@ -1,7 +1,8 @@
 import { Pause, PlayArrow, SkipNext, SkipPrevious } from '@mui/icons-material';
-import { IconButton, Slider, Stack, Typography } from '@mui/material';
+import { IconButton, Stack, Typography } from '@mui/material';
+import { Box } from '@mui/system';
+import { VibeChoice } from '../shared/components/VibeChoice';
 import { useCurrentTrackText, usePlayer } from '../shared/hooks';
-import { muiVolumeSxOverrides } from '../shared/muiVolumeSxOverrides';
 
 const iconSX = { height: '25px', width: '25px' };
 
@@ -12,9 +13,7 @@ export const Transport = () => {
     handlePause,
     handleSkipBack,
     handleSkipForward,
-    setMasterVolume,
     isPlaying,
-    masterVolume,
     currentTrackLoaded,
   } = usePlayer();
   const renderPlayPause = () => {
@@ -63,14 +62,8 @@ export const Transport = () => {
         >
           <SkipNext sx={iconSX} />
         </IconButton>
-        <Slider
-          sx={{ ml: '20px', width: '80px', ...muiVolumeSxOverrides }}
-          aria-label="Volume"
-          value={masterVolume}
-          onChange={(...args: unknown[]) => {
-            setMasterVolume(args[1] as number);
-          }}
-        />
+        <Box sx={{ mr: 3 }} />
+        <VibeChoice fontSize="18px" spacing={3} />
       </Stack>
     </Stack>
   );
