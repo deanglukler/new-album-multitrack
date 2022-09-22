@@ -3,12 +3,10 @@ import mobileLoadingPic from './assets/Mobile_LoadingPic.png';
 import mobileLinerGif from './assets/Mobile_LinerPic.gif';
 import mobileQuietGif from './assets/Mobile_QuietPic.gif';
 import mobileVioletGif from './assets/Mobile_VioletPic.gif';
-import { useBackground, usePlayer } from '../shared/hooks';
-import { loadPlayer } from '../shared/player/loadPlayer';
+import { useBackground } from '../shared/hooks';
 
 export function Background(): JSX.Element {
   const { display } = useBackground();
-  const { setBeganLoadingTrue } = usePlayer();
 
   const mobileImgStyles = {
     width: 1,
@@ -25,11 +23,6 @@ export function Background(): JSX.Element {
         sx={{ width: 1 }}
         alt="Gavin Bradley"
         src={mobileLoadingPic}
-        onLoad={() => {
-          console.log('loading image loaded');
-          loadPlayer();
-          setBeganLoadingTrue();
-        }}
       />
       <Box
         component="img"

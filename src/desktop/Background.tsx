@@ -26,11 +26,6 @@ export function Background(): JSX.Element {
         sx={DesktopImgStyles}
         alt="Gavin Bradley"
         src={desktopLoadingPic}
-        onLoad={() => {
-          console.log('loading image loaded');
-          loadPlayer();
-          setBeganLoadingTrue();
-        }}
       />
       <Box
         component="img"
