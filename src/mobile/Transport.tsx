@@ -19,7 +19,6 @@ export const Transport = () => {
     if (!isPlaying) {
       return (
         <IconButton
-          sx={{ paddingLeft: 0 }}
           aria-label="play"
           onClick={handleOnPlay}
           disabled={!currentTrackLoaded}
@@ -29,11 +28,7 @@ export const Transport = () => {
       );
     }
     return (
-      <IconButton
-        sx={{ paddingLeft: 0 }}
-        aria-label="pause"
-        onClick={handlePause}
-      >
+      <IconButton aria-label="pause" onClick={handlePause}>
         <Pause />
       </IconButton>
     );
@@ -49,11 +44,7 @@ export const Transport = () => {
         <VibeChoice fontSize="16px" spacing={0} />
       </Box>
       <Stack justifyContent="center" direction="row" alignItems="center">
-        <IconButton
-          sx={{ paddingLeft: 0 }}
-          aria-label="skip previous"
-          onClick={handleSkipBack}
-        >
+        <IconButton aria-label="skip previous" onClick={handleSkipBack}>
           <SkipPrevious />
         </IconButton>
         <Typography align="center">Skip</Typography>
