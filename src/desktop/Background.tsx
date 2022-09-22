@@ -15,10 +15,8 @@ export function Background(): JSX.Element {
     position: 'absolute',
     right: 0,
     bottom: 0,
-    top: 0,
     zIndex: -100,
     marginTop: '60px',
-    height: '100%',
   };
 
   return (
