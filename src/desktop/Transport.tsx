@@ -39,12 +39,6 @@ export const Transport = () => {
   return (
     <Stack sx={{ ml: '-7px' }}>
       <Stack direction="row" alignItems="center" sx={{ mb: '6px' }}>
-        {renderPlayPause()}
-        <Typography fontSize={17} align="center">
-          {currentTrackText}
-        </Typography>
-      </Stack>
-      <Stack direction="row" alignItems="center" sx={{ mb: '6px' }}>
         <IconButton
           sx={{ padding: 0 }}
           aria-label="skip previous"
@@ -64,6 +58,12 @@ export const Transport = () => {
         </IconButton>
         <Box sx={{ mr: 3 }} />
         <VibeChoice fontSize="18px" spacing={3} />
+      </Stack>
+      <Stack direction="row" alignItems="center" sx={{ mb: '6px' }}>
+        {renderPlayPause()}
+        <Typography fontSize={17} align="center">
+          {currentTrackText}
+        </Typography>
       </Stack>
     </Stack>
   );

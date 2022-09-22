@@ -11,7 +11,7 @@ import { LoadingBar } from '../shared/components/LoadingBar';
 
 export function HeaderInfo(): JSX.Element {
   const { handleOnPlay, currentTrackLoaded, currentTrack } = usePlayer();
-  const height = '35px';
+  const height = '43px';
   const { loading, play, violetLife, quietLife, linerNotes } = useInfoDisplay();
   return (
     <Box sx={{ display: 'flex', mb: '6px' }}>
