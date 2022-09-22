@@ -15,7 +15,7 @@ export function VibeChoice({
     fontSize,
     color: 'black',
     textDecoration: 'none',
-    '&:hover': { textDecoration: 'underline' },
+    '&:hover': { sm: { textDecoration: 'underline' } },
   };
 
   return (
@@ -34,7 +34,7 @@ export function VibeChoice({
         Change Lifestyle
       </Typography>
       <Typography
-        sx={{ ...vibeText, textDecoration: commentary ? 'underline' : 'none' }}
+        sx={vibeText}
         onClick={() => {
           setCommentary(!commentary);
         }}
