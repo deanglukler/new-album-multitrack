@@ -29,7 +29,22 @@ export function SocialIcons({
       spacing={spacing}
       direction={'row'}
     >
-      <Link href={LINKS.GB_SITE}>
+      <Link
+        onClick={(e) => {
+          if (navigator.share) {
+            e.preventDefault();
+            navigator
+              .share({
+                title: document.title,
+                text: 'Hello World',
+                url: window.location.href,
+              })
+              .then(() => console.log('Successful share'))
+              .catch((error) => console.log('Error sharing:', error));
+          }
+        }}
+        href={LINKS.GB_SITE}
+      >
         <Box
           sx={imgSx}
           className="social-icon"
