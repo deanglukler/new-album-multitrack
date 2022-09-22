@@ -39,13 +39,13 @@ export const Transport = () => {
 
   return (
     <Stack sx={{ ml: '-7px' }}>
-      <Stack direction="row" alignItems="center">
+      <Stack direction="row" alignItems="center" sx={{ mb: '6px' }}>
         {renderPlayPause()}
-        <Typography fontSize={14} align="center">
+        <Typography fontSize={17} align="center">
           {currentTrackText}
         </Typography>
       </Stack>
-      <Stack direction="row" alignItems="center">
+      <Stack direction="row" alignItems="center" sx={{ mb: '6px' }}>
         <IconButton
           sx={{ padding: 0 }}
           aria-label="skip previous"
@@ -53,7 +53,7 @@ export const Transport = () => {
         >
           <SkipPrevious sx={iconSX} />
         </IconButton>
-        <Typography fontSize={14} align="center">
+        <Typography fontSize={17} align="center">
           Skip
         </Typography>
         <IconButton

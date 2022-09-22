@@ -14,7 +14,7 @@ export function HeaderInfo(): JSX.Element {
   const height = '35px';
   const { loading, play, violetLife, quietLife, linerNotes } = useInfoDisplay();
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', mb: '6px' }}>
       <Box
         sx={{ height }}
         component="img"

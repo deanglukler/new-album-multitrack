@@ -15,7 +15,7 @@ export function DesktopContainer(): JSX.Element {
       {beganPlaying && (
         <>
           <Transport />
-          <VibeChoice fontSize="15px" spacing={3} />
+          <VibeChoice fontSize="18px" spacing={3} />
         </>
       )}
       <Footer />

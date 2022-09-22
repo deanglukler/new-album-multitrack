@@ -4,7 +4,7 @@ export function HeaderLink(props: any): JSX.Element {
   return (
     <Link
       sx={{
-        fontSize: '18px',
+        fontSize: '22px',
         color: 'black',
         textDecoration: 'none',
         cursor: 'pointer',
