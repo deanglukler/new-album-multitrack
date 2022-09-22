@@ -199,8 +199,6 @@ export const useInfoDisplay = () => {
 };
 
 export const useCurrentTrackText = () => {
-  const { currentTrack, currentTrackLoaded } = usePlayer();
-  return `${currentTrack?.trackData?.title}${
-    !currentTrackLoaded ? ' LOADING..' : ''
-  }`;
+  const { currentTrack } = usePlayer();
+  return `${currentTrack?.trackData?.title}`;
 };
