@@ -18,11 +18,13 @@ export class Player {
     });
     this.firstTrack = this.tracks[0];
     this.currentTrack = this.firstTrack;
-    this.loadTrack(this.currentTrack).then(() => {
-      this.loadSurroundingTracks().then(() => {
-        this.loadNextUnloadedTrack();
-      });
-    });
+    this.loadCurrentTrack();
+    this.loadNextTrack();
+    // this.loadTrack(this.currentTrack).then(() => {
+    //   this.loadSurroundingTracks().then(() => {
+    //     this.loadNextUnloadedTrack();
+    //   });
+    // });
     // this.loadNextUnloadedTrack();
   }
 
@@ -94,8 +96,12 @@ export class Player {
     ]);
   }
 
+  private loadNextTrack() {
+    return this.loadTrack(this.getNextTrack());
+  }
+
   private loadCurrentTrack() {
-    this.loadTrack(this.tracks[this.getCurrentTrackIndex()]);
+    return this.loadTrack(this.tracks[this.getCurrentTrackIndex()]);
   }
 
   private getCurrentTrackIndex() {
@@ -107,6 +113,10 @@ export class Player {
 
   public getCurrentTrack() {
     return this.currentTrack;
+  }
+
+  private getNextTrack() {
+    return this.tracks[this.getNextTrackIndex()];
   }
 
   private getNextTrackIndex() {
@@ -125,18 +135,27 @@ export class Player {
     }
   }
 
+  private loadCurrentTrackIfNotLoaded() {
+    if (!this.currentTrack.isLoaded) {
+      this.loadCurrentTrack();
+    }
+  }
+  private loadNextTrackIfNotLoaded() {
+    if (!this.getNextTrack().isLoaded) {
+      this.loadNextTrack();
+    }
+  }
+
   private setCurrentTrackToNext() {
     this.currentTrack = this.tracks[this.getNextTrackIndex()];
-
-    // this.unloadAllTracks();
-    // this.loadCurrentTrack();
+    this.loadCurrentTrackIfNotLoaded();
+    this.loadNextTrack();
   }
 
   private setCurrentTrackToPrevious() {
     this.currentTrack = this.tracks[this.getPreviousTrackIndex()];
-
-    // this.unloadAllTracks();
-    // this.loadCurrentTrack();
+    this.loadCurrentTrackIfNotLoaded();
+    this.loadNextTrack();
   }
 
   private onTrackEnd() {
@@ -150,13 +169,21 @@ export class Player {
    * play
    */
   public play() {
+    this.pause();
     if (!this.currentTrack.track)
       throw new Error('should not be attempting to play yet');
+
     if (this.currentTrack.track && this.currentTrack.isLoaded) {
       this.setVolumes();
       this.currentTrack.track.play();
       this.isPlaying = true;
+    } else if (this.currentTrack.track && !this.currentTrack.isLoaded) {
+      console.log(
+        'Attempting to play track that is not loaded.. loading track..'
+      );
+      this.loadCurrentTrack();
     } else {
+      console.warn('Attempted to play track but couldnt..');
       this.isPlaying = false;
     }
     // this.isPlaying = this.currentTrack.track.isPlaying();
@@ -166,10 +193,12 @@ export class Player {
    * pause
    */
   public pause() {
-    if (this.currentTrack.track && this.currentTrack.isLoaded) {
-      this.currentTrack.track.pause();
-      this.isPlaying = false;
-    }
+    this.tracks.forEach((track) => {
+      if (track.track) {
+        track.track.pause();
+        this.isPlaying = false;
+      }
+    });
   }
 
   /**
@@ -219,6 +248,16 @@ export class Player {
   public playPreviousTrack() {
     this.preparePreviousTrack();
     this.play();
+  }
+
+  public syncTrackSeek() {
+    if (!this.volume) {
+      return console.warn('attempting to sync tracks without volume set');
+    }
+    if (!this.currentTrack.track) {
+      return console.error('cant sync track, track is null');
+    }
+    this.currentTrack.track?.sync(this.volume);
   }
 
   /**

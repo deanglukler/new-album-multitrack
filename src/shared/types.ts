@@ -23,12 +23,12 @@ export interface Howls extends RequestHowls {
 export type TrackHowls = Howls[];
 
 export type Commentary = 'commentary' | 'no-commentary';
-export type Genre = 'acoustic' | 'synthetic';
+export type Genre = 'acoustic' | 'synthetic' | 'commentary';
 
 export interface Volume {
-  genre: Genre;
-  commentary: boolean;
+  nextGenre: Genre;
   masterVolume: number;
+  previousGenre: Genre;
 }
 
 export interface PlayerTrack {

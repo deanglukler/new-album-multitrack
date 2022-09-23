@@ -94,7 +94,7 @@ export class Track {
     return this.controlHowl.seek();
   }
 
-  public setVolumes({ genre, commentary, masterVolume }: Volume) {
+  public setVolumes({ nextGenre, masterVolume, previousGenre }: Volume) {
     // this will only work on desktop, using html5 audio
     this.acousticHowl.volume(0);
     this.acousticHowl.mute(true);
@@ -103,16 +103,37 @@ export class Track {
     this.syntheticHowl.volume(0);
     this.syntheticHowl.mute(true);
 
-    if (commentary) {
+    if (nextGenre === 'commentary') {
       this.commentaryHowl.mute(false);
       this.commentaryHowl.volume(masterVolume / 100);
-    } else if (genre === 'acoustic') {
+      // this.commentaryHowl.fade(0, masterVolume / 100, 1000);
+    } else if (nextGenre === 'acoustic') {
       this.acousticHowl.mute(false);
       this.acousticHowl.volume(masterVolume / 100);
-    } else if (genre === 'synthetic') {
+      // this.commentaryHowl.fade(0, masterVolume / 100, 1000);
+    } else if (nextGenre === 'synthetic') {
       this.syntheticHowl.mute(false);
       this.syntheticHowl.volume(masterVolume / 100);
+      // this.commentaryHowl.fade(0, masterVolume / 100, 1000);
     }
+  }
+
+  public sync({ nextGenre }: Volume) {
+    let seek = 0;
+    if (nextGenre === 'commentary') {
+      seek = this.commentaryHowl.seek();
+      this.acousticHowl.seek(seek);
+      this.syntheticHowl.seek(seek);
+    } else if (nextGenre === 'acoustic') {
+      seek = this.acousticHowl.seek();
+      this.syntheticHowl.seek(seek);
+      this.commentaryHowl.seek(seek);
+    } else if (nextGenre === 'synthetic') {
+      seek = this.syntheticHowl.seek();
+      this.acousticHowl.seek(seek);
+      this.commentaryHowl.seek(seek);
+    }
+    console.log('set seek to..', seek);
   }
 
   public isPlaying() {

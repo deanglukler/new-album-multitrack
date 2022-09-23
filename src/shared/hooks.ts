@@ -1,8 +1,22 @@
 import { useMediaQuery, useTheme } from '@mui/material';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Genre } from './types';
 import { useStoreActions, useStoreState } from './store';
 import { Player } from './player/Player';
+
+function usePrevious<T>(value: T) {
+  // The ref object is a generic container whose current property is mutable ...
+  // ... and can hold any value, similar to an instance property on a class
+  const ref = useRef<T>();
+
+  // Store current value in ref
+  useEffect(() => {
+    ref.current = value;
+  }, [value]); // Only re-run if value changes
+
+  // Return previous value (happens before update in useEffect above)
+  return ref.current;
+}
 
 export const useIsMobile = () => {
   const theme = useTheme();
@@ -38,6 +52,8 @@ export const usePlayer = () => {
     beganLoading,
     beganPlaying,
   } = playerState;
+
+  const previousGenre = usePrevious<Genre>(genre);
 
   const updatePlayerState = useStoreActions(
     (actions) => actions.updatePlayerState
@@ -85,8 +101,14 @@ export const usePlayer = () => {
 
   useEffect(() => {
     if (!player) return;
-    player.setVolumes({ genre, commentary, masterVolume });
-  }, [genre, commentary, masterVolume, loaded, player]);
+    let nextGenre = genre;
+    nextGenre = commentary ? 'commentary' : nextGenre;
+    player.setVolumes({
+      nextGenre,
+      previousGenre: previousGenre || nextGenre, // this may be undefined on first render
+      masterVolume,
+    });
+  }, [genre, commentary, masterVolume, loaded, player, previousGenre]);
 
   const doIfPlayerExists = useCallback(
     (cb: (p: Player) => void) => () => {
