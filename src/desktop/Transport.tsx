@@ -4,7 +4,7 @@ import { Box } from '@mui/system';
 import { VibeChoice } from '../shared/components/VibeChoice';
 import { useCurrentTrackText, usePlayer } from '../shared/hooks';
 
-const iconSX = { height: '25px', width: '25px' };
+const iconSX = { height: '21px', width: '21px' };
 
 export const Transport = () => {
   const currentTrackText = useCurrentTrackText();
@@ -61,7 +61,7 @@ export const Transport = () => {
       </Stack>
       <Stack direction="row" alignItems="center" sx={{ mb: '6px' }}>
         {renderPlayPause()}
-        <Typography fontSize={17} align="center">
+        <Typography fontSize={17} sx={{ ml: '3px' }} align="center">
           {currentTrackText}
         </Typography>
       </Stack>

@@ -192,6 +192,7 @@ const displayNoneState = {
   quietLife: 'none',
   linerNotes: 'none',
 };
+
 export const useInfoDisplay = () => {
   const { isPlaying, commentary, genre, loaded, beganPlaying } = usePlayer();
   const [displayState, setDisplayState] = useState({ ...displayNoneState });
@@ -200,7 +201,7 @@ export const useInfoDisplay = () => {
       setDisplayState({ ...displayNoneState, loading: 'unset' });
       return;
     }
-    if (!isPlaying && !beganPlaying) {
+    if (!isPlaying) {
       setDisplayState({ ...displayNoneState, play: 'unset' });
       return;
     }

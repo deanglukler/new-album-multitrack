@@ -11,7 +11,7 @@ export function MobileContainer(): JSX.Element {
   return (
     <Box sx={{ margin: '20px' }}>
       <Header />
-      {beganPlaying && <Transport />}
+      {beganPlaying ? <Transport /> : <Box sx={{ height: '104px' }} />}
       <Background />
       <WorkLinks />
       <Footer />

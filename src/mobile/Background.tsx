@@ -1,5 +1,4 @@
 import { Box } from '@mui/material';
-import mobileLoadingPic from './assets/Mobile_LoadingPic.png';
 import mobileLinerGif from './assets/Mobile_LinerPic.gif';
 import mobileQuietGif from './assets/Mobile_QuietPic.gif';
 import mobileVioletGif from './assets/Mobile_VioletPic.gif';
@@ -22,7 +21,7 @@ export function Background(): JSX.Element {
         component="img"
         sx={{ width: 1 }}
         alt="Gavin Bradley"
-        src={mobileLoadingPic}
+        src={mobileLinerGif}
       />
       <Box
         component="img"

@@ -16,6 +16,20 @@ interface SocialIconProps {
   stackSX?: SxProps;
 }
 
+const shareEmailBody = `Stream now: https://linktr.ee/gavinbradley
+%0D%0A
+or listen on the web: https://www.gavinbradley.com/
+%0D%0A%0D%0A
+For an acoustic experience select ‘Quiet Life’.
+%0D%0A
+For a synthetic experience, ‘Violet Life’.
+%0D%0A%0D%0A
+For a discussion of the making of these albums, the Liner Notes podcast series is available on all platforms.
+%0D%0A
+`;
+
+const shareEmailSubject = `Linking You To: Quiet Life and Violet Life - A Dual Album Project by Gavin Bradley`;
+
 export function SocialIcons({
   spacing,
   height,
@@ -39,13 +53,15 @@ export function SocialIcons({
               navigator
                 .share({
                   title: 'Gavin Bradley',
-                  text: "Gavin Bradley's Music",
+                  text: 'Gavin Bradley - Quiet Life/Violet Life',
                   url: LINKS.GB_SITE,
                 })
                 .then(() => console.log('Successful share'))
                 .catch((error) => console.log('Error sharing:', error));
             } else {
-              window.open(`mailto:?&body=${LINKS.GB_SITE}`);
+              window.open(
+                `mailto:?subject=${shareEmailSubject}&body=${shareEmailBody}`
+              );
             }
           }}
           sx={imgSx}
@@ -55,7 +71,7 @@ export function SocialIcons({
           src={Link1_Share}
         />
       </Link>
-      <Link href={LINKS.GB_SPOTIFY}>
+      <Link href={LINKS.GB_SPOTIFY} target="_blank">
         <Box
           sx={imgSx}
           className="social-icon"
@@ -64,7 +80,7 @@ export function SocialIcons({
           src={Link2_Spotify}
         />
       </Link>
-      <Link href={LINKS.GB_APPLE}>
+      <Link href={LINKS.GB_APPLE} target="_blank">
         <Box
           sx={imgSx}
           className="social-icon"
