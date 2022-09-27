@@ -41,17 +41,9 @@ export default function useDeviceDetect() {
 }
 
 export const usePlayer = () => {
-  const player = window.player;
   const playerState = useStoreState((store) => store.playerState);
-  const {
-    isPlaying,
-    genre,
-    commentary,
-    masterVolume,
-    loaded,
-    beganLoading,
-    beganPlaying,
-  } = playerState;
+  const { isPlaying, genre, commentary, masterVolume, loaded, beganPlaying } =
+    playerState;
 
   const previousGenre = usePrevious<Genre>(genre);
 
@@ -60,63 +52,54 @@ export const usePlayer = () => {
   );
 
   const updateCurrentTrackInStore = useCallback(() => {
-    if (!player) throw new Error('cannot update without player');
-    const track = player.getCurrentTrack();
+    if (!window.player) throw new Error('cannot update without player');
+    const track = window.player.getCurrentTrack();
     updatePlayerState({
       currentTrack: track,
       loaded: track.isLoaded,
       currentTrackLoaded: track.isLoaded,
-      isPlaying: player.isPlaying,
+      isPlaying: window.player.isPlaying,
     });
     if (!track.isLoaded) {
       track.track?.trackLoad.then(() => {
         updateCurrentTrackInStore();
       });
     }
-  }, [updatePlayerState, player]);
+  }, [updatePlayerState]);
 
   useEffect(() => {
-    if (!beganLoading) return;
-    const loadedWait = setInterval(() => {
-      console.log('waiting for first track to load..');
-      if (window.playerLoaded) {
-        if (!player) throw new Error('wtf no player?');
-        updatePlayerState({
-          loaded: true,
-        });
-        updateCurrentTrackInStore();
-        clearInterval(loadedWait);
-      }
-    }, 100);
-    return () => clearInterval(loadedWait);
-  }, [updatePlayerState, beganLoading, player, updateCurrentTrackInStore]);
+    if (!window.player) return;
+    window.player.onTrackLoad = updateCurrentTrackInStore;
+  }, [updateCurrentTrackInStore]);
 
   useEffect(() => {
-    if (!player) return;
-    player.onSongFinished = () => {
-      player.playNextTrack();
+    if (!window.player) return;
+    window.player.onSongFinished = () => {
+      if (!window.player) return;
+      window.player.playNextTrack();
       updateCurrentTrackInStore();
     };
-  }, [updateCurrentTrackInStore, player]);
+  }, [updateCurrentTrackInStore]);
 
   useEffect(() => {
-    if (!player) return;
+    if (!window.player) return;
     let nextGenre = genre;
     nextGenre = commentary ? 'commentary' : nextGenre;
-    player.setVolumes({
+    window.player.syncTrackSeek();
+    window.player.setVolumes({
       nextGenre,
       previousGenre: previousGenre || nextGenre, // this may be undefined on first render
       masterVolume,
     });
-  }, [genre, commentary, masterVolume, loaded, player, previousGenre]);
+  }, [genre, commentary, masterVolume, loaded, previousGenre]);
 
   const doIfPlayerExists = useCallback(
     (cb: (p: Player) => void) => () => {
-      if (player) {
-        cb(player);
+      if (window.player) {
+        cb(window.player);
       }
     },
-    [player]
+    []
   );
   return {
     setBeganLoadingTrue: () => {
@@ -158,6 +141,7 @@ export const usePlayer = () => {
     setGenre: (genre: Genre) => {
       updatePlayerState({ genre });
     },
+    updateCurrentTrackInStore,
     ...playerState,
   };
 };

@@ -5,27 +5,26 @@ import { TRACKDATAS } from './TRACKDATAS';
 export class Player {
   public onSongFinished: (() => void) | null = null;
   public isPlaying: boolean = false;
+  public onTrackLoad: () => void = () => {
+    console.warn('handleTrackLoad called but not set');
+  };
 
-  private isLoadingFirstSong: boolean = true;
   private tracks: PlayerTrack[] = [];
   private currentTrack: PlayerTrack;
   private firstTrack: PlayerTrack;
   private volume: Volume | null = null;
 
-  constructor(private loadedFirstSongCallback: () => void) {
+  constructor() {
     this.tracks = TRACKDATAS.map((trackData, index) => {
       return { isLoaded: false, track: null, trackData, index };
     });
     this.firstTrack = this.tracks[0];
     this.currentTrack = this.firstTrack;
+  }
+
+  public initLoading() {
     this.loadCurrentTrack();
     this.loadNextTrack();
-    // this.loadTrack(this.currentTrack).then(() => {
-    //   this.loadSurroundingTracks().then(() => {
-    //     this.loadNextUnloadedTrack();
-    //   });
-    // });
-    // this.loadNextUnloadedTrack();
   }
 
   private loadNextUnloadedTrack() {
@@ -53,12 +52,9 @@ export class Player {
     trackToLoad.track = track;
     return track.trackLoad
       .then(() => {
-        if (this.isLoadingFirstSong) {
-          this.isLoadingFirstSong = false;
-          this.loadedFirstSongCallback();
-        }
         trackToLoad.isLoaded = true;
         console.log(`loaded track ${trackToLoad.trackData.title}`);
+        this.onTrackLoad();
       })
       .catch(() => {
         console.log(`ERROR loading track ${track.trackData.title}`);
@@ -252,10 +248,12 @@ export class Player {
 
   public syncTrackSeek() {
     if (!this.volume) {
-      return console.warn('attempting to sync tracks without volume set');
+      return console.log(
+        'SYNC incomplete: Attempting to sync tracks without volume set'
+      );
     }
     if (!this.currentTrack.track) {
-      return console.error('cant sync track, track is null');
+      return console.log('SYNC incomplete: Cant sync track, track is null');
     }
     this.currentTrack.track?.sync(this.volume);
   }

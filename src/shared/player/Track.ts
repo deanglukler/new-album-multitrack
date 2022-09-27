@@ -133,7 +133,6 @@ export class Track {
       this.acousticHowl.seek(seek);
       this.commentaryHowl.seek(seek);
     }
-    console.log('set seek to..', seek);
   }
 
   public isPlaying() {
