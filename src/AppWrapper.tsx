@@ -6,17 +6,18 @@ import { loadPlayer } from './shared/player/loadPlayer';
 
 let loadedWait = setInterval(() => {}, 100);
 
-function AppWrapper() {
-  const { setBeganLoadingTrue, updateCurrentTrackInStore } = usePlayer();
-  const isMobile = useIsMobile();
+window.addEventListener('load', () => {});
 
-  useEffect(() => {
-    window.addEventListener('load', () => {
-      console.log('initializing player..');
-      setBeganLoadingTrue();
-      loadPlayer();
-    });
-  }, [setBeganLoadingTrue]);
+document.addEventListener('readystatechange', () => {
+  if (document.readyState === 'complete') {
+    console.log('initializing player..');
+    loadPlayer();
+  }
+});
+
+function AppWrapper() {
+  const { updateCurrentTrackInStore } = usePlayer();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     clearInterval(loadedWait);

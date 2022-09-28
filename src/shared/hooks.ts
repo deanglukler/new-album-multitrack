@@ -102,9 +102,6 @@ export const usePlayer = () => {
     []
   );
   return {
-    setBeganLoadingTrue: () => {
-      updatePlayerState({ ...playerState, beganLoading: true });
-    },
     handleOnPlay: doIfPlayerExists((p) => {
       p.play();
       if (!beganPlaying) {

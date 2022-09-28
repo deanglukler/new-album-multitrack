@@ -3,7 +3,6 @@ import { Genre, PlayerTrack } from './types';
 
 interface PlayerState {
   isPlaying: boolean;
-  beganLoading: boolean;
   loaded: boolean;
   beganPlaying: boolean;
   currentTrackLoaded: boolean;
@@ -15,7 +14,6 @@ interface PlayerState {
 
 interface PlayerStateUpdates {
   isPlaying?: boolean;
-  beganLoading?: boolean;
   loaded?: boolean;
   beganPlaying?: boolean;
   currentTrackLoaded?: boolean;
@@ -34,7 +32,6 @@ export const store = createStore<StoreModel>({
   playerState: {
     isPlaying: false,
     loaded: false,
-    beganLoading: false,
     beganPlaying: false,
     currentTrackLoaded: false,
     currentTrack: null,
