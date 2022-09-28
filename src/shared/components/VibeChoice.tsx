@@ -34,7 +34,7 @@ export function VibeChoice({
         Change Lifestyle
       </Typography>
       <Typography
-        sx={vibeText}
+        sx={{ ...vibeText, textDecoration: commentary ? 'underline' : 'none' }}
         onClick={() => {
           setCommentary(!commentary);
         }}
