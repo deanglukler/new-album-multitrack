@@ -85,7 +85,6 @@ export const usePlayer = () => {
     if (!window.player) return;
     let nextGenre = genre;
     nextGenre = commentary ? 'commentary' : nextGenre;
-    window.player.syncTrackSeek();
     window.player.setVolumes({
       nextGenre,
       previousGenre: previousGenre || nextGenre, // this may be undefined on first render
